@@ -2,8 +2,8 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Oh My Cookie | Handcrafted Cookies & Cakes Stockholm</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>O My Cookie! | Handcrafted Cookies Stockholm</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- React and Babel -->
@@ -12,105 +12,67 @@
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
     <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
-    <!-- QR Code Library -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-    <!-- EmailJS Library -->
-    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
-    <script type="text/javascript">
-        (function() {
-            // Initializing EmailJS with the provided Public Key
-            emailjs.init("3KI9EiGAUzljTFtkV");
-        })();
-    </script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
-        
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap');
         body { 
             font-family: 'Plus Jakarta Sans', sans-serif; 
             -webkit-tap-highlight-color: transparent;
-            background-color: #FDFBF7;
-            overflow-x: hidden;
         }
-
-        .animate-in { animation: fadeIn 0.5s cubic-bezier(0.16, 1, 0.3, 1); }
-        @keyframes fadeIn { 
-            from { opacity: 0; transform: translateY(20px); } 
-            to { opacity: 1; transform: translateY(0); } 
-        }
-
+        .animate-in { animation: fadeIn 0.4s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
         
-        .cookie-card:hover .product-media { transform: scale(1.08); }
-        .product-media { transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1); }
+        .cookie-card:hover .cookie-image { transform: scale(1.05); }
+        .cookie-image { transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1); }
         
-        .nav-blur {
-            backdrop-filter: blur(12px);
-            background-color: rgba(255, 255, 255, 0.85);
-        }
-
-        .glass-panel {
-            background: rgba(255, 255, 255, 0.75);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(212, 163, 115, 0.15);
-        }
-
-        .mesh-gradient {
-            background-color: #FDFBF7;
-            background-image: 
-                radial-gradient(at 0% 0%, rgba(212, 163, 115, 0.05) 0px, transparent 50%),
-                radial-gradient(at 100% 100%, rgba(74, 55, 40, 0.05) 0px, transparent 50%);
-        }
-
-        .btn-hover {
-            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-        @media (hover: hover) {
-            .btn-hover:hover {
-                transform: translateY(-2px);
-                box-shadow: 0 10px 20px -10px rgba(74, 55, 40, 0.3);
-            }
-        }
-        
-        .mobile-menu-enter { transform: translateX(100%); }
-        .mobile-menu-active { transform: translateX(0); transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
-
-        #qrcode img {
-            margin: auto;
-        }
-
-        input:focus {
-            outline: none;
-            border-color: #D4A373;
-            box-shadow: 0 0 0 2px rgba(212, 163, 115, 0.1);
-        }
-
-        .swish-bg {
-            background: linear-gradient(135deg, #2D58A7 0%, #1D3D73 100%);
-        }
-
-        .swish-loader {
-            width: 40px;
-            height: 40px;
-            border: 3px solid rgba(255,255,255,0.3);
-            border-radius: 50%;
-            border-top-color: #fff;
-            animation: spin 1s ease-in-out infinite;
-        }
-
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
+        .social-link:hover { transform: translateY(-4px); }
+        .social-link { transition: all 0.3s ease; }
     </style>
 </head>
-<body class="mesh-gradient text-[#4A3728]">
+<body class="bg-[#FDFBF7] text-[#4A3728] overflow-x-hidden">
     <div id="root"></div>
 
     <script type="text/babel">
-        const { useState, useEffect, useRef, useMemo } = React;
+        const { useState, useEffect, useRef } = React;
 
-        // Custom SVG Icons
-        const ShoppingBagSVG = ({ size = 20, className = "" }) => (
+        const Icon = ({ name, size = 24, className = "" }) => {
+            const containerRef = useRef(null);
+            
+            const renderIcon = () => {
+                if (window.lucide && containerRef.current) {
+                    containerRef.current.innerHTML = '';
+                    const iconElement = document.createElement('i');
+                    iconElement.setAttribute('data-lucide', name.toLowerCase());
+                    if (className) iconElement.setAttribute('class', className);
+                    iconElement.style.width = `${size}px`;
+                    iconElement.style.height = `${size}px`;
+                    containerRef.current.appendChild(iconElement);
+                    window.lucide.createIcons({
+                        attrs: { 
+                            width: size, 
+                            height: size, 
+                            'stroke-width': 2,
+                            stroke: 'currentColor'
+                        },
+                        nameAttr: 'data-lucide',
+                        icons: window.lucide.icons,
+                        root: containerRef.current
+                    });
+                }
+            };
+
+            useEffect(() => {
+                renderIcon();
+                const timer = setTimeout(renderIcon, 100);
+                return () => clearTimeout(timer);
+            }, [name, size, className]);
+
+            return <span ref={containerRef} className={`inline-flex items-center justify-center ${className}`} style={{ width: size, height: size }} />;
+        };
+
+        // Robust Inline SVG Cart Icon
+        const CartIcon = ({ size = 22, className = "" }) => (
             <svg 
                 width={size} 
                 height={size} 
@@ -122,79 +84,25 @@
                 strokeLinejoin="round" 
                 className={className}
             >
-                <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/>
+                <circle cx="8" cy="21" r="1" />
+                <circle cx="19" cy="21" r="1" />
+                <path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12" />
             </svg>
         );
-
-        const CookieSVG = ({ color = "#D4A373", className = "" }) => (
-            <svg viewBox="0 0 200 200" className={className} xmlns="http://www.w3.org/2000/svg">
-                <circle cx="100" cy="100" r="85" fill={color} fillOpacity="0.1" />
-                <path d="M100 20 C 150 20, 180 50, 180 100 C 180 150, 150 180, 100 180 C 50 180, 20 150, 20 100 C 20 50, 50 20, 100 20" fill={color} />
-                <circle cx="70" cy="65" r="10" fill="#4A3728" opacity="0.4" />
-                <circle cx="130" cy="80" r="12" fill="#4A3728" opacity="0.4" />
-                <circle cx="95" cy="120" r="9" fill="#4A3728" opacity="0.4" />
-                <circle cx="145" cy="130" r="7" fill="#4A3728" opacity="0.4" />
-                <circle cx="60" cy="135" r="11" fill="#4A3728" opacity="0.4" />
-            </svg>
-        );
-
-        const ProductImage = ({ src, color, alt, className = "" }) => {
-            const [error, setError] = useState(false);
-            if (!src || error) {
-                return <CookieSVG color={color} className={className} />;
-            }
-            return (
-                <img 
-                    src={src} 
-                    alt={alt} 
-                    className={`${className} object-cover w-full h-full`}
-                    onError={() => setError(true)}
-                />
-            );
-        };
-
-        const Icon = ({ name, size = 24, className = "" }) => {
-            const containerRef = useRef(null);
-            useEffect(() => {
-                if (window.lucide && containerRef.current) {
-                    containerRef.current.innerHTML = '';
-                    const iconElement = document.createElement('i');
-                    iconElement.setAttribute('data-lucide', name.toLowerCase());
-                    if (className) iconElement.setAttribute('class', className);
-                    iconElement.style.width = `${size}px`;
-                    iconElement.style.height = `${size}px`;
-                    containerRef.current.appendChild(iconElement);
-                    window.lucide.createIcons({
-                        attrs: { width: size, height: size, 'stroke-width': 2, stroke: 'currentColor' },
-                        nameAttr: 'data-lucide',
-                        icons: window.lucide.icons,
-                        root: containerRef.current
-                    });
-                }
-            }, [name, size, className]);
-            return <span ref={containerRef} className={`inline-flex items-center justify-center ${className}`} style={{ width: size, height: size }} />;
-        };
 
         const COOKIES = [
-            { id: 'raspberry-white', name: 'Raspberry White Choco', desc: 'Tangy Swedish raspberries paired with premium creamy white chocolate chunks.', price: 38, color: '#E5989B', tag: 'New', imageSrc: 'images/cookies/raspberry-white.jpg' },
-            { id: 'pistachio', name: 'Pistachio Cookie', desc: 'Rich roasted pistachio dough with a silky pistachio cream center.', price: 42, color: '#B5C99A', tag: 'Best Seller', imageSrc: 'images/cookies/pistachio.jpg' },
-            { id: 'biscoff-white', name: 'Biscoff White Choco', desc: 'Caramelized Biscoff spread core topped with white chocolate drizzles.', price: 38, color: '#D4A373', tag: 'Best Seller', imageSrc: 'images/cookies/biscoff.jpg' },
-            { id: 'brown-butter', name: 'Brown Butter Choco', desc: 'Nutty brown butter dough loaded with 70% dark chocolate chunks and sea salt.', price: 35, color: '#8B5E3C', tag: 'The Classic', imageSrc: 'images/cookies/brown-butter.jpg' },
-            { id: 'red-velvet', name: 'Red Velvet Cheesecake', desc: 'Vibrant cocoa dough with a thick, tangy cream cheese frosting filling.', price: 40, color: '#A4161A', tag: 'Must Try', imageSrc: 'images/cookies/red-velvet.jpg' }
-        ];
-
-        const CAKES = [
-            { id: 'kunafa-jar', name: 'Kunafa Jar Cake', desc: 'A fusion of crunchy kataifi and sweet cream layers.', price: 75, color: '#E9C46A', tag: 'New', imageSrc: 'images/cakes/kunafa-jar.jpg' },
-            { id: 'saffron-tiramisu', name: 'Saffron Tiramisu', desc: 'A Swedish twist on the Italian classic with golden saffron notes.', price: 85, color: '#F4A261', tag: 'Signature', imageSrc: 'images/cakes/saffron-tiramisu.jpg' },
-            { id: 'rum-cake', name: 'Dark Rum Cake', desc: 'Dark and decadent butter cake infused with premium rum.', price: 65, color: '#264653', tag: 'Specialty', imageSrc: 'images/cakes/rum-cake.jpg' },
-            { id: 'strawberry-jar', name: 'Strawberry Jar Cake', desc: 'Fresh, light sponge layered with Swedish strawberries and cream.', price: 75, color: '#EF476F', tag: 'Light', imageSrc: 'images/cakes/strawberry-jar.jpg' },
-            { id: 'choco-lava', name: 'Choco Lava Cake', desc: 'The ultimate warm-centered dessert for the true chocolate lover.', price: 60, color: '#1D1D1D', tag: 'Warm', imageSrc: 'images/cakes/choco-lava.jpg' }
+            { id: 'biscoff', name: 'Biscoff Dream', desc: 'Spiced Belgian cookie butter core with crunchy bits.', price: 35, image: 'https://images.unsplash.com/photo-1499636136210-6f4ee915583e?auto=format&fit=crop&w=600', tag: 'Best Seller' },
+            { id: 'chocochip', name: 'The Classic', desc: 'Brown butter dough with 70% dark chocolate chunks.', price: 25, image: 'https://images.unsplash.com/photo-1558961363-fa8fdf82db35?auto=format&fit=crop&w=600', tag: null },
+            { id: 'pistachio', name: 'Pistachio Cream', desc: 'Rich roasted pistachio filling with white chocolate.', price: 40, image: 'https://images.unsplash.com/photo-1590080875515-8a3a8dc5735e?auto=format&fit=crop&w=600', tag: 'Best Seller' },
+            { id: 'raspberry', name: 'Raspberry White', desc: 'Tart Swedish raspberries with creamy white chocolate.', price: 38, image: 'https://images.unsplash.com/photo-1603532648955-039310d9ed75?auto=format&fit=crop&w=600' },
+            { id: 'blueberry', name: 'Blueberry Cheese', desc: 'Wild Swedish blueberries with cream cheese center.', price: 38, image: 'https://images.unsplash.com/photo-1583182332473-b31ba08929c8?auto=format&fit=crop&w=600' },
+            { id: 'lemon', name: 'Lemon Curd', desc: 'Zesty lemon core with a sugar-dusted finish.', price: 35, image: 'https://images.unsplash.com/photo-1559622214-f8a9850965bb?auto=format&fit=crop&w=600', tag: 'Seasonal' }
         ];
 
         const BOX_OPTIONS = [
-            { size: 5, price: 165, title: 'The Taster Box', label: 'Box of 5', savings: 'Save 10%', imageSrc: 'images/boxes/taster.jpg' },
-            { size: 7, price: 225, title: 'The Weekender', label: 'Box of 7', savings: 'Save 15%', imageSrc: 'images/boxes/weekender.jpg' },
-            { size: 10, price: 295, title: 'The Fika Set', label: 'Box of 10', savings: 'Save 20%', imageSrc: 'images/boxes/fika-set.jpg' }
+            { size: 5, price: 165, title: 'The Taster Box', label: 'Box of 5', savings: 'Save 10%' },
+            { size: 10, price: 295, title: 'The Fika Set', label: 'Box of 10', savings: 'Save 20%' },
+            { size: 15, price: 395, title: 'The Party Pack', label: 'Box of 15', savings: 'Save 30%' }
         ];
 
         const TESTIMONIALS = [
@@ -203,304 +111,175 @@
             { name: "Maja W.", text: "Building my own box is so addictive. Perfect for office Friday snacks!", handle: "@maja_sthlm" }
         ];
 
-        const QRCodeGenerator = ({ url, size = 140 }) => {
-            const qrRef = useRef(null);
-            useEffect(() => {
-                if (qrRef.current) {
-                    qrRef.current.innerHTML = '';
-                    new QRCode(qrRef.current, {
-                        text: url,
-                        width: size,
-                        height: size,
-                        colorDark: "#2D58A7",
-                        colorLight: "#ffffff",
-                        correctLevel: QRCode.CorrectLevel.H
-                    });
-                }
-            }, [url, size]);
-            return <div ref={qrRef} id="qrcode" className="flex justify-center p-3 bg-white rounded-xl shadow-inner border border-gray-100"></div>;
-        };
-
         const App = () => {
             const [view, setView] = useState('home');
             const [cart, setCart] = useState([]);
             const [selectedBoxSize, setSelectedBoxSize] = useState(null);
             const [currentBox, setCurrentBox] = useState([]);
             const [isCartOpen, setIsCartOpen] = useState(false);
-            const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+            const [cartStep, setCartStep] = useState('review');
             const [showCookieBanner, setShowCookieBanner] = useState(false);
-            const [scrolled, setScrolled] = useState(false);
-            
-            const [checkoutStep, setCheckoutStep] = useState(1);
-            const [isSwishProcessing, setIsSwishProcessing] = useState(false);
-            const [orderId, setOrderId] = useState(null);
-            const [checkoutData, setCheckoutData] = useState({
-                name: '', email: '', phone: '',
-                method: 'pickup', address: '',
-                paymentMethod: 'swish'
-            });
 
             useEffect(() => {
-                const handleScroll = () => setScrolled(window.scrollY > 20);
-                window.addEventListener('scroll', handleScroll);
                 const consent = localStorage.getItem('cookie-consent');
-                if (!consent) setTimeout(() => setShowCookieBanner(true), 1500);
-                return () => window.removeEventListener('scroll', handleScroll);
+                if (!consent) {
+                    const timer = setTimeout(() => setShowCookieBanner(true), 2000);
+                    return () => clearTimeout(timer);
+                }
             }, []);
 
-            const navigate = (to, sectionId = null) => {
-                setIsMobileMenuOpen(false);
-                setIsCartOpen(false);
-                if (sectionId) {
-                    if (view !== 'home') {
-                        setView('home');
-                        setTimeout(() => {
-                            const el = document.getElementById(sectionId);
-                            if (el) el.scrollIntoView({ behavior: 'smooth' });
-                        }, 150);
-                    } else {
-                        const el = document.getElementById(sectionId);
-                        if (el) el.scrollIntoView({ behavior: 'smooth' });
-                    }
-                } else {
-                    setView(to);
-                    if (to === 'checkout') {
-                        setCheckoutStep(1);
-                        setOrderId(null);
-                    }
-                    window.scrollTo({ top: 0, behavior: 'smooth' });
-                }
+            const acceptCookies = () => {
+                localStorage.setItem('cookie-consent', 'true');
+                setShowCookieBanner(false);
             };
 
-            const subtotal = useMemo(() => cart.reduce((sum, item) => sum + (item.price * item.quantity), 0), [cart]);
-            const totalItemsCount = useMemo(() => cart.reduce((sum, item) => sum + item.quantity, 0), [cart]);
-            const deliveryFee = checkoutData.method === 'delivery' ? 49 : 0;
-            const totalPrice = subtotal + deliveryFee;
-
-            const addToCart = (name, price) => {
-                setCart(prev => {
-                    const exists = prev.find(i => i.name === name);
-                    if (exists) return prev.map(i => i.name === name ? { ...i, quantity: i.quantity + 1 } : i);
-                    return [...prev, { id: Math.random(), name, price, quantity: 1 }];
+            // Consolidated Add Function
+            const addToCart = (type, price) => {
+                setCart(prevCart => {
+                    const existingIndex = prevCart.findIndex(item => item.type === type);
+                    if (existingIndex > -1) {
+                        const newCart = [...prevCart];
+                        newCart[existingIndex] = { 
+                            ...newCart[existingIndex], 
+                            quantity: newCart[existingIndex].quantity + 1 
+                        };
+                        return newCart;
+                    } else {
+                        return [...prevCart, { id: Math.random(), type, price, quantity: 1 }];
+                    }
                 });
                 setIsCartOpen(true);
             };
 
             const updateQuantity = (id, delta) => {
-                setCart(prev => prev.map(i => i.id === id ? { ...i, quantity: Math.max(0, i.quantity + delta) } : i).filter(i => i.quantity > 0));
+                setCart(prevCart => {
+                    return prevCart.map(item => {
+                        if (item.id === id) {
+                            const newQty = Math.max(0, item.quantity + delta);
+                            return { ...item, quantity: newQty };
+                        }
+                        return item;
+                    }).filter(item => item.quantity > 0);
+                });
+            };
+
+            const handleStartBox = (size) => {
+                setSelectedBoxSize(size);
+                setCurrentBox([]);
+                setView('shop');
+                window.scrollTo(0, 0);
+            };
+
+            const addToBox = (cookie) => {
+                if (currentBox.length < selectedBoxSize) {
+                    setCurrentBox([...currentBox, { ...cookie, boxId: Math.random() }]);
+                }
             };
 
             const addBoxToCart = () => {
                 const opt = BOX_OPTIONS.find(b => b.size === selectedBoxSize);
-                setCart([...cart, { id: Math.random(), name: opt.title, items: [...currentBox], price: opt.price, quantity: 1 }]);
-                setSelectedBoxSize(null);
+                setCart([...cart, { id: Math.random(), type: opt.title, items: [...currentBox], price: opt.price, quantity: 1 }]);
                 setCurrentBox([]);
+                setSelectedBoxSize(null);
+                setCartStep('review');
                 setIsCartOpen(true);
             };
 
-            // Email Validation Logic
-            const isValidEmail = (email) => {
-                const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-                return re.test(email);
-            };
+            const totalPrice = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+            const totalItemsCount = cart.reduce((sum, item) => sum + item.quantity, 0);
 
-            // Enhanced Phone Validation & Formatting
-            const formatSwedishPhone = (input) => {
-                const digits = input.replace(/\D/g, '');
-                let formatted = digits.substring(0, 9);
-                if (formatted.length > 5) {
-                    formatted = `${formatted.slice(0, 2)} ${formatted.slice(2, 5)} ${formatted.slice(5, 7)} ${formatted.slice(7)}`;
-                } else if (formatted.length > 2) {
-                    formatted = `${formatted.slice(0, 2)} ${formatted.slice(2)}`;
+            const navigateToSection = (sectionId) => {
+                if (view !== 'home') {
+                    setView('home');
+                    setTimeout(() => {
+                        document.getElementById(sectionId)?.scrollIntoView({ behavior: 'smooth' });
+                    }, 100);
+                } else {
+                    document.getElementById(sectionId)?.scrollIntoView({ behavior: 'smooth' });
                 }
-                return formatted.trim();
             };
-
-            const isValidSwedishPhone = (number) => {
-                const digitsOnly = number.replace(/\s+/g, '');
-                return digitsOnly.length === 9 && digitsOnly.startsWith('7');
-            };
-
-            const handleCheckoutNext = () => setCheckoutStep(prev => prev + 1);
-            const handleCheckoutBack = () => setCheckoutStep(prev => prev - 1);
-
-            // Unique Order ID Logic
-            const generateUniqueOrderId = () => {
-                const prefix = "OMC";
-                const timestamp = Date.now().toString(36).toUpperCase(); 
-                const randomPart = Math.floor(Math.random() * 1000).toString().padStart(3, '0');
-                return `${prefix}-${timestamp}-${randomPart}`;
-            };
-
-            const sendConfirmationEmail = (newOrderId) => {
-                // Formatting cart items for the email template
-                const itemsList = cart.map(item => `${item.name} (x${item.quantity}) - ${item.price * item.quantity} SEK`).join('\n');
-                
-                const templateParams = {
-                    to_name: checkoutData.name,
-                    to_email: checkoutData.email,
-                    order_id: newOrderId,
-                    total_price: totalPrice,
-                    delivery_method: checkoutData.method === 'pickup' ? 'Store Pickup' : `Delivery to: ${checkoutData.address}`,
-                    items_details: itemsList,
-                    contact_phone: checkoutData.phone
-                };
-
-                // Triggering EmailJS
-                emailjs.send(
-                    "service_t6r1r9b",
-                    "template_893j36h",
-                    templateParams
-                ).then(
-                    (response) => console.log('Email sent successfully!', response.status, response.text),
-                    (err) => console.error('Failed to send email:', err)
-                );
-            };
-
-            const handleSwishPayment = () => {
-                setIsSwishProcessing(true);
-                setTimeout(() => {
-                    const newId = generateUniqueOrderId();
-                    setOrderId(newId);
-                    setIsSwishProcessing(false);
-                    setCheckoutStep(4);
-                    
-                    // Call email function on success
-                    sendConfirmationEmail(newId);
-                }, 3000);
-            };
-
-            const swishLink = `swish://payment?address=0764349138&amount=${totalPrice}&message=Order%20OhMyCookie&edit=false`;
-
-            const navItems = [
-                { id: 'home', label: 'Home' },
-                { id: 'cookies', label: 'Cookies', section: 'cookies-section' },
-                { id: 'cakes', label: 'Cakes & Jars' },
-                { id: 'shop', label: 'Build Box' },
-                { id: 'about', label: 'About' }
-            ];
 
             return (
-                <div className={`min-h-screen flex flex-col selection:bg-[#D4A373] selection:text-white ${isMobileMenuOpen || isCartOpen ? 'overflow-hidden' : ''}`}>
-                    <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 px-4 md:px-12 ${scrolled ? 'py-3 nav-blur shadow-sm' : 'py-6 md:py-8 bg-transparent'}`}>
-                        <div className="max-w-7xl mx-auto flex justify-between items-center">
-                            <div className="flex items-center gap-2 md:gap-3 cursor-pointer group" onClick={() => navigate('home')}>
-                                <div className="bg-[#4A3728] p-1.5 md:p-2 rounded-xl group-hover:rotate-12 transition-transform">
-                                    <Icon name="Cookie" size={18} className="text-white md:w-[20px] md:h-[20px]" />
-                                </div>
-                                <span className="font-black text-lg md:text-xl tracking-tighter uppercase text-[#4A3728]">
-                                    ohmycookie<span className="text-[#D4A373]">.se</span>
-                                </span>
+                <div className="min-h-screen flex flex-col selection:bg-[#D4A373] selection:text-white">
+                    {/* Navbar */}
+                    <nav className="sticky top-0 z-40 bg-white/95 backdrop-blur-md px-4 md:px-10 py-4 md:py-5 flex justify-between items-center border-b border-[#F2E8DF]">
+                        <div className="flex items-center gap-2 cursor-pointer" onClick={() => {setView('home'); window.scrollTo(0,0)}}>
+                            <div className="bg-[#4A3728] p-1.5 rounded-lg">
+                                <Icon name="Cookie" size={20} className="text-white" />
                             </div>
-
-                            <div className="hidden lg:flex gap-8">
-                                {navItems.map(item => (
-                                    <button 
-                                        key={item.id}
-                                        onClick={() => navigate(item.id, item.section)}
-                                        className={`text-[11px] font-black uppercase tracking-[0.2em] transition-colors ${view === item.id ? 'text-[#D4A373]' : 'text-[#4A3728]/60 hover:text-[#4A3728]'}`}
-                                    >
-                                        {item.label}
-                                    </button>
-                                ))}
+                            <span className="font-extrabold text-xl tracking-tighter uppercase text-[#4A3728]">
+                                omycookie<span className="text-[#D4A373]">.se</span>
+                            </span>
+                        </div>
+                        
+                        <div className="flex gap-4 md:gap-8 items-center">
+                            <div className="hidden md:flex gap-8 font-bold text-[11px] uppercase tracking-widest">
+                                <button onClick={() => {setView('home'); window.scrollTo(0,0)}} className={view === 'home' ? 'text-[#D4A373]' : 'text-[#4A3728] hover:text-[#D4A373] transition-colors'}>Home</button>
+                                <button onClick={() => navigateToSection('cookies-section')} className="text-[#4A3728] hover:text-[#D4A373] transition-colors">Our Cookies</button>
+                                <button onClick={() => {setView('shop'); window.scrollTo(0,0)}} className={view === 'shop' ? 'text-[#D4A373]' : 'text-[#4A3728] hover:text-[#D4A373] transition-colors'}>Cookie Boxes</button>
+                                <button onClick={() => {setView('about'); window.scrollTo(0,0)}} className={view === 'about' ? 'text-[#D4A373]' : 'text-[#4A3728] hover:text-[#D4A373] transition-colors'}>About CC</button>
                             </div>
-
-                            <div className="flex items-center gap-2 md:gap-4">
-                                <button 
-                                    onClick={() => setIsCartOpen(true)}
-                                    className="relative h-10 px-3 md:h-12 md:px-4 glass-panel rounded-xl md:rounded-2xl flex items-center justify-center gap-2.5 border border-[#D4A373]/20 hover:scale-105 transition-transform"
-                                >
-                                    <ShoppingBagSVG size={18} className="text-[#4A3728]" />
-                                    {totalItemsCount > 0 && (
-                                        <span className="bg-[#D4A373] text-white text-[10px] md:text-xs font-black px-2 py-0.5 rounded-full flex items-center justify-center min-w-[20px]">
-                                            {totalItemsCount}
-                                        </span>
-                                    )}
-                                </button>
-                                
-                                <button 
-                                    onClick={() => setIsMobileMenuOpen(true)}
-                                    className="lg:hidden w-10 h-10 glass-panel rounded-xl flex items-center justify-center"
-                                >
-                                    <Icon name="Menu" size={18} />
-                                </button>
-                            </div>
+                            
+                            <button 
+                                onClick={() => setIsCartOpen(true)} 
+                                className="relative flex items-center justify-center w-12 h-12 bg-[#F5EBE0] hover:bg-[#EDE0D4] active:scale-95 transition-all rounded-2xl shadow-sm border border-[#E8DCCF]"
+                                aria-label="Open Shopping Cart"
+                            >
+                                <CartIcon size={22} className="text-[#4A3728]" />
+                                {totalItemsCount > 0 && (
+                                    <span className="absolute -top-1 -right-1 bg-[#D4A373] text-white text-[10px] font-black w-5 h-5 rounded-full flex items-center justify-center ring-2 ring-white animate-in">
+                                        {totalItemsCount}
+                                    </span>
+                                )}
+                            </button>
                         </div>
                     </nav>
 
-                    {isMobileMenuOpen && (
-                        <div className="fixed inset-0 z-[100] bg-[#4A3728] text-white flex flex-col p-8 md:p-12 animate-in">
-                            <div className="flex justify-between items-center mb-16">
-                                <span className="font-black text-xl tracking-tighter uppercase">ohmycookie<span className="text-[#D4A373]">.se</span></span>
-                                <button onClick={() => setIsMobileMenuOpen(false)} className="w-12 h-12 rounded-full border border-white/10 flex items-center justify-center">
-                                    <Icon name="X" size={24} />
-                                </button>
-                            </div>
-                            <div className="flex flex-col gap-8">
-                                {navItems.map((item, idx) => (
-                                    <button 
-                                        key={item.id}
-                                        onClick={() => navigate(item.id, item.section)}
-                                        className="text-4xl md:text-6xl font-black text-left tracking-tighter hover:text-[#D4A373] transition-colors"
-                                        style={{ animationDelay: `${idx * 0.1}s` }}
-                                    >
-                                        {item.label}
-                                    </button>
-                                ))}
-                            </div>
-                            <div className="mt-auto pt-10 border-t border-white/5 space-y-4">
-                                <p className="text-[#A09184] text-xs font-bold uppercase tracking-widest">Stockholm, Sweden</p>
-                                <div className="flex gap-4">
-                                    <Icon name="Instagram" size={20} className="text-[#A09184]" />
-                                    <Icon name="Facebook" size={20} className="text-[#A09184]" />
-                                </div>
-                            </div>
-                        </div>
-                    )}
-
-                    <main className="flex-grow pt-24 md:pt-32 pb-12 md:pb-20 px-4 md:px-6">
+                    <main className="flex-grow w-full max-w-7xl mx-auto px-4 md:px-6 py-4">
                         {view === 'home' && (
-                            <div className="max-w-7xl mx-auto space-y-20 md:space-y-32">
-                                <header className="relative bg-[#4A3728] rounded-[2.5rem] md:rounded-[5rem] overflow-hidden p-8 md:p-24 min-h-[500px] md:min-h-[600px] flex items-center">
-                                    <div className="absolute top-0 right-0 w-1/2 h-full opacity-10 pointer-events-none hidden md:block">
-                                        <CookieSVG color="#FFFFFF" className="w-full h-full scale-150 rotate-12" />
-                                    </div>
-                                    <div className="relative z-10 max-w-2xl space-y-6 md:space-y-8 animate-in text-center md:text-left mx-auto md:mx-0">
-                                        <div className="inline-block px-4 py-1.5 rounded-full bg-white/10 text-[9px] md:text-[10px] font-black uppercase tracking-[0.3em] text-[#D4A373]">Stockholm Bakery</div>
-                                        <h1 className="text-4xl sm:text-5xl md:text-8xl font-black text-white leading-[1.1] md:leading-[0.9] tracking-tighter">
-                                            THE ART <br className="hidden md:block"/>OF THE <br className="hidden md:block"/><span className="italic font-light text-[#D4A373]">Perfect</span> CRUNCH.
-                                        </h1>
-                                        <p className="text-[#A09184] text-base md:text-lg max-w-sm mx-auto md:mx-0 leading-relaxed">Handcrafted cookies and specialty jar cakes. Fresh fika delivered across Stockholm.</p>
-                                        <div className="flex flex-col sm:flex-row gap-3 md:gap-4 pt-4 md:pt-6">
-                                            <button onClick={() => navigate('shop')} className="w-full sm:w-auto px-10 py-5 bg-[#D4A373] text-white rounded-2xl font-black text-xs uppercase tracking-widest btn-hover">Build Your Box</button>
-                                            <button onClick={() => navigate('home', 'cookies-section')} className="w-full sm:w-auto px-10 py-5 glass-panel text-white border border-white/20 rounded-2xl font-black text-xs uppercase tracking-widest btn-hover">Our Menu</button>
+                            <div className="animate-in space-y-20 md:space-y-32 mb-20">
+                                {/* Hero */}
+                                <header className="bg-[#4A3728] text-white rounded-[2.5rem] md:rounded-[4rem] p-8 md:p-24 flex flex-col md:flex-row items-center gap-12 overflow-hidden relative">
+                                    <div className="flex-1 space-y-8 z-10 text-center md:text-left">
+                                        <div className="bg-white/10 w-fit px-4 py-1 rounded-full text-[10px] font-black uppercase tracking-[0.2em] mx-auto md:mx-0">Stockholm, Sweden</div>
+                                        <h1 className="text-5xl md:text-[90px] font-extrabold leading-[0.95] tracking-tighter">THE <br/><span className="text-[#D4A373]">BIGGEST</span> <br/>CRUNCH.</h1>
+                                        <p className="text-lg opacity-70 max-w-sm mx-auto md:mx-0">Hand-rolled, gooey-centered perfection. Grab a few treats or build a custom box for your next gathering</p>
+                                        <div className="flex flex-col sm:flex-row gap-4 pt-4">
+                                            <button onClick={() => document.getElementById('cookies-section').scrollIntoView({behavior:'smooth'})} className="bg-white text-[#4A3728] px-8 py-5 rounded-2xl font-black text-sm uppercase flex items-center justify-center gap-2 hover:bg-[#D4A373] hover:text-white transition-all">Explore Flavors</button>
+                                            <button onClick={() => setView('shop')} className="bg-[#D4A373] text-white px-8 py-5 rounded-2xl font-black text-sm uppercase flex items-center justify-center gap-2">Curate Your Box</button>
                                         </div>
+                                    </div>
+                                    <div className="flex-1 relative flex items-center justify-center">
+                                        <img src="https://images.unsplash.com/photo-1499636136210-6f4ee915583e?auto=format&fit=crop&w=800" className="w-[85%] rounded-[3rem] shadow-2xl rotate-3" alt="Hero Cookie" />
                                     </div>
                                 </header>
-                                <section id="cookies-section" className="scroll-mt-32 space-y-12 md:space-y-16">
-                                    <div className="flex flex-col md:flex-row justify-between items-center md:items-end gap-6 border-b border-[#F2E8DF] pb-10 text-center md:text-left">
-                                        <div className="space-y-3">
-                                            <span className="text-[10px] font-black uppercase tracking-[0.4em] text-[#D4A373]">Fresh from the oven</span>
-                                            <h2 className="text-4xl md:text-6xl font-black text-[#4A3728] tracking-tighter">Signature Cookies</h2>
+
+                                {/* Our Cookies Section */}
+                                <section id="cookies-section" className="space-y-12">
+                                    <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 px-2">
+                                        <div className="space-y-2">
+                                            <h2 className="text-[10px] font-black uppercase tracking-[0.3em] text-[#D4A373]">Current Menu</h2>
+                                            <h3 className="text-4xl md:text-5xl font-extrabold tracking-tight text-[#4A3728]">Our Cookies</h3>
                                         </div>
-                                        <p className="text-[#A09184] max-w-xs text-sm italic font-medium hidden md:block">Baking with 100% organic butter and premium cocoa.</p>
+                                        <p className="text-[#A09184] max-w-md text-sm md:text-base leading-relaxed">Each cookie is baked using Swedish organic butter and premium chocolate. We rotate flavors monthly to keep your fika exciting.</p>
                                     </div>
-                                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-10">
+
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
                                         {COOKIES.map(cookie => (
-                                            <div key={cookie.id} className="group cookie-card bg-white rounded-[2rem] md:rounded-[2.5rem] border border-[#F2E8DF] p-5 md:p-6 hover:shadow-2xl transition-all duration-500">
-                                                <div className="relative aspect-square mb-6 md:mb-8 overflow-hidden rounded-[1.5rem] md:rounded-[2rem]">
-                                                    <div className="absolute inset-0 bg-[#FAF9F6] flex items-center justify-center p-8 md:p-12">
-                                                        <ProductImage src={cookie.imageSrc} color={cookie.color} alt={cookie.name} className="product-media" />
-                                                    </div>
-                                                    {cookie.tag && (<div className="absolute top-4 left-4 glass-panel px-3 md:px-4 py-1.5 rounded-full text-[8px] md:text-[9px] font-black uppercase tracking-widest text-[#4A3728]">{cookie.tag}</div>)}
+                                            <div key={cookie.id} className="cookie-card group bg-white rounded-[2.5rem] border border-[#F2E8DF] p-5 shadow-sm hover:shadow-xl transition-all">
+                                                <div className="relative aspect-[4/5] overflow-hidden rounded-[2rem] mb-6">
+                                                    <img src={cookie.image} className="cookie-image w-full h-full object-cover" alt={cookie.name} />
+                                                    {cookie.tag && (
+                                                        <div className="absolute top-4 left-4 bg-white/90 backdrop-blur-sm px-4 py-1.5 rounded-full font-black text-[9px] uppercase tracking-widest text-[#4A3728] shadow-sm">{cookie.tag}</div>
+                                                    )}
                                                 </div>
-                                                <div className="space-y-4">
-                                                    <div className="flex justify-between items-start">
-                                                        <h3 className="text-xl md:text-2xl font-black text-[#4A3728] tracking-tight">{cookie.name}</h3>
-                                                        <span className="font-black text-base md:text-lg text-[#D4A373] whitespace-nowrap">{cookie.price} <span className="text-[10px]">SEK</span></span>
+                                                <div className="space-y-2 px-2">
+                                                    <div className="flex justify-between items-center">
+                                                        <h4 className="text-2xl font-extrabold text-[#4A3728]">{cookie.name}</h4>
+                                                        <span className="font-black text-[#D4A373]">{cookie.price} SEK</span>
                                                     </div>
-                                                    <p className="text-sm text-[#A09184] leading-relaxed line-clamp-2 md:line-clamp-none">{cookie.desc}</p>
-                                                    <button onClick={() => addToCart(cookie.name, cookie.price)} className="w-full py-4 bg-[#F5EBE0]/40 text-[#4A3728] rounded-xl font-black text-[10px] uppercase tracking-[0.2em] hover:bg-[#4A3728] hover:text-white transition-all active:scale-95">Add to bag</button>
+                                                    <p className="text-sm text-[#A09184] leading-relaxed pb-4">{cookie.desc}</p>
+                                                    <button onClick={() => addToCart(cookie.name, cookie.price)} className="w-full py-4 bg-[#F5EBE0]/60 rounded-xl font-black text-[11px] uppercase tracking-widest text-[#4A3728] group-hover:bg-[#4A3728] group-hover:text-white transition-all">Quick Add</button>
                                                 </div>
                                             </div>
                                         ))}
@@ -509,588 +288,437 @@
                             </div>
                         )}
 
-                        {view === 'cakes' && (
-                            <div className="max-w-7xl mx-auto space-y-12 md:space-y-20 animate-in pt-6">
-                                <header className="text-center space-y-4 md:space-y-6 max-w-3xl mx-auto">
-                                    <span className="text-[10px] font-black uppercase tracking-[0.5em] text-[#D4A373]">Specialty Collection</span>
-                                    <h1 className="text-4xl md:text-7xl font-black text-[#4A3728] tracking-tighter">Cakes & Jars</h1>
-                                    <p className="text-base md:text-lg text-[#A09184] leading-relaxed">Layered with fresh Swedish cream and high-quality infusions.</p>
-                                </header>
-                                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-12">
-                                    {CAKES.map(cake => (
-                                        <div key={cake.id} className="bg-white rounded-[2.5rem] overflow-hidden border border-[#F2E8DF] hover:shadow-xl transition-shadow group">
-                                            <div className="aspect-[16/10] bg-[#FAF9F6] flex items-center justify-center p-8 relative">
-                                                <div className="w-24 h-24 md:w-32 md:h-32 group-hover:rotate-12 transition-transform duration-700">
-                                                    <ProductImage src={cake.imageSrc} color={cake.color} alt={cake.name} />
+                        {view === 'about' && (
+                            <div className="animate-in space-y-20 mb-20">
+                                {/* Page Header */}
+                                <div className="text-center space-y-6 pt-12">
+                                    <h2 className="text-[10px] font-black uppercase tracking-[0.3em] text-[#D4A373]">Our Story</h2>
+                                    <h1 className="text-5xl md:text-7xl font-extrabold tracking-tighter text-[#4A3728]">Baked in <br/><span className="italic text-[#D4A373]">Stockholm</span></h1>
+                                </div>
+
+                                {/* Founder Section */}
+                                <section className="grid md:grid-cols-2 gap-16 items-center bg-white rounded-[3rem] p-8 md:p-16 border border-[#F2E8DF]">
+                                    <div className="relative">
+                                        <div className="absolute -top-6 -left-6 w-24 h-24 bg-[#D4A373] rounded-full flex items-center justify-center text-white z-10 -rotate-12 shadow-xl">
+                                            <span className="font-black text-xl tracking-tighter">PD</span>
+                                        </div>
+                                        <div className="aspect-[4/5] rounded-[2rem] overflow-hidden">
+                                            <img 
+                                                src="https://images.unsplash.com/photo-1556910103-1c02745aae4d?auto=format&fit=crop&w=800" 
+                                                className="w-full h-full object-cover" 
+                                                alt="Founder PD in the kitchen" 
+                                            />
+                                        </div>
+                                    </div>
+                                    <div className="space-y-8">
+                                        <div className="space-y-4">
+                                            <h3 className="text-3xl font-extrabold text-[#4A3728]">Meet the Founder: PD</h3>
+                                            <p className="text-[#A09184] leading-relaxed text-lg">
+                                                OMYCOOKIE.SE was created with one intention: to give people a moment they would remember.
+                                                From the very beginning, the focus wasn’t on where we started—but on what we wanted others to feel. A cookie that surprises. Comfort that lingers. A pause in the day that feels genuinely special.
+                                            </p>
+                                            <p className="text-[#A09184] leading-relaxed text-lg">
+                                                “To me, fika is about presence,” says founder PD. “It’s about slowing down and enjoying something made with thought. That’s the experience we wanted to share.”
+                                            </p>
+                                        </div>
+                                        <div className="pt-6 border-t border-[#F2E8DF]">
+                                            <div className="flex items-center gap-4">
+                                                <div className="w-12 h-12 rounded-full bg-[#F5EBE0] flex items-center justify-center">
+                                                    <Icon name="Coffee" size={20} className="text-[#4A3728]" />
                                                 </div>
-                                                <div className="absolute top-6 left-6"><span className="bg-white/90 px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest shadow-sm">{cake.tag}</span></div>
-                                            </div>
-                                            <div className="p-6 md:p-8 space-y-4 md:space-y-5">
-                                                <div className="flex justify-between items-center">
-                                                    <h3 className="text-xl md:text-2xl font-black text-[#4A3728]">{cake.name}</h3>
-                                                    <span className="text-[#D4A373] font-black text-sm md:text-base">{cake.price} SEK</span>
-                                                </div>
-                                                <p className="text-sm text-[#A09184] leading-relaxed line-clamp-2 md:line-clamp-none">{cake.desc}</p>
-                                                <button onClick={() => addToCart(cake.name, cake.price)} className="w-full py-4 md:py-5 bg-[#4A3728] text-white rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-[#D4A373] transition-colors flex items-center justify-center gap-2 active:scale-95"><Icon name="Plus" size={16} /> Add to bag</button>
+                                                <p className="text-xs font-black uppercase tracking-widest text-[#4A3728]">Stockholm's Purest Fika Experience</p>
                                             </div>
                                         </div>
-                                    ))}
-                                </div>
+                                    </div>
+                                </section>
+
+                                {/* Community Section */}
+                                <section className="space-y-12">
+                                    <div className="text-center">
+                                        <h2 className="text-[10px] font-black uppercase tracking-[0.3em] text-[#D4A373] mb-4">The Community</h2>
+                                        <h3 className="text-4xl font-extrabold text-[#4A3728]">Loved by Cookie-Fans</h3>
+                                    </div>
+                                    <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                                        {TESTIMONIALS.map((t, idx) => (
+                                            <div key={idx} className="bg-white p-8 rounded-3xl border border-[#F2E8DF] shadow-sm relative overflow-hidden group">
+                                                <Icon name="Quote" size={40} className="absolute -right-2 -top-2 text-[#F5EBE0] opacity-50 transition-transform group-hover:scale-110" />
+                                                <p className="text-[#A09184] italic leading-relaxed mb-6">"{t.text}"</p>
+                                                <div>
+                                                    <div className="font-bold text-[#4A3728]">{t.name}</div>
+                                                    <div className="text-[10px] font-black text-[#D4A373] uppercase tracking-widest">{t.handle}</div>
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </section>
+
+                                {/* Social Section */}
+                                <section className="bg-[#4A3728] rounded-[3rem] p-12 md:p-20 text-center space-y-8 text-white relative overflow-hidden">
+                                    <div className="absolute top-0 left-0 w-full h-full opacity-5 pointer-events-none">
+                                        <div className="grid grid-cols-6 gap-4 p-4">
+                                            {[...Array(12)].map((_, i) => <Icon key={i} name="Cookie" size={60} />)}
+                                        </div>
+                                    </div>
+                                    <div className="relative z-10 space-y-6">
+                                        <h3 className="text-4xl md:text-5xl font-extrabold tracking-tight leading-tight">Stay Gooey With Us</h3>
+                                        <p className="opacity-70 max-w-xl mx-auto">Tag us in your fika moments for a chance to be featured in our community gallery.</p>
+                                        <div className="flex flex-col sm:flex-row justify-center gap-4 pt-4">
+                                            <a href="#" className="bg-[#D4A373] hover:bg-[#C19A6B] text-white px-8 py-4 rounded-2xl font-black text-xs uppercase tracking-widest flex items-center justify-center gap-3 transition-all">
+                                                <Icon name="Instagram" size={18} /> Instagram
+                                            </a>
+                                            <a href="#" className="bg-white/10 hover:bg-white/20 text-white px-8 py-4 rounded-2xl font-black text-xs uppercase tracking-widest flex items-center justify-center gap-3 border border-white/20 transition-all">
+                                                <Icon name="Facebook" size={18} /> Facebook
+                                            </a>
+                                        </div>
+                                    </div>
+                                </section>
+                                
+                                <section className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                                    <div className="bg-white p-10 rounded-[2.5rem] border border-[#F2E8DF] space-y-4">
+                                        <Icon name="Leaf" className="text-[#D4A373]" size={32} />
+                                        <h4 className="text-xl font-bold text-[#4A3728]">Local Ingredients</h4>
+                                        <p className="text-sm text-[#A09184]">We source our butter and flour from local Swedish mills and farms.</p>
+                                    </div>
+                                    <div className="bg-white p-10 rounded-[2.5rem] border border-[#F2E8DF] space-y-4">
+                                        <Icon name="Heart" className="text-[#D4A373]" size={32} />
+                                        <h4 className="text-xl font-bold text-[#4A3728]">Handmade</h4>
+                                        <p className="text-sm text-[#A09184]">Every single cookie is weighed and rolled by hand daily.</p>
+                                    </div>
+                                    <div className="bg-white p-10 rounded-[2.5rem] border border-[#F2E8DF] space-y-4">
+                                        <Icon name="Zap" className="text-[#D4A373]" size={32} />
+                                        <h4 className="text-xl font-bold text-[#4A3728]">Baked Fresh</h4>
+                                        <p className="text-sm text-[#A09184]">We bake in small batches throughout the day to ensure warmth.</p>
+                                    </div>
+                                </section>
                             </div>
                         )}
 
                         {view === 'shop' && (
-                            <div className="max-w-7xl mx-auto animate-in pt-6 md:pt-10">
+                            <div className="animate-in pt-6 pb-20">
+                                <button onClick={() => setView('home')} className="flex items-center gap-2 font-bold text-xs uppercase tracking-widest text-[#A09184] mb-10 hover:text-[#4A3728] transition-colors">
+                                    <Icon name="ArrowLeft" size={14} /> Back to Home
+                                </button>
+                                
                                 {!selectedBoxSize ? (
-                                    <div className="space-y-12 md:space-y-16">
+                                    <div className="space-y-12 py-10">
                                         <div className="text-center space-y-4">
-                                            <h2 className="text-4xl md:text-5xl font-black text-[#4A3728] tracking-tighter">Curate Your Fika Box</h2>
-                                            <p className="text-[#A09184]">Pick a size and fill it with your favorite flavors.</p>
+                                            <h2 className="text-4xl md:text-5xl font-extrabold text-[#4A3728]">Select Your Box</h2>
+                                            <p className="text-[#A09184] text-lg">Choose a size to start curating your perfect cookie collection.</p>
                                         </div>
-                                        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8 max-w-5xl mx-auto">
+                                        <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
                                             {BOX_OPTIONS.map(box => (
-                                                <button key={box.size} onClick={() => setSelectedBoxSize(box.size)} className="bg-white p-8 md:p-10 rounded-[2.5rem] md:rounded-[3rem] border-2 border-[#F2E8DF] hover:border-[#D4A373] transition-all group text-left space-y-6 md:space-y-8">
-                                                    <div className="flex justify-between items-start">
-                                                        <div className="w-12 h-12 md:w-16 md:h-16 bg-[#F5EBE0] rounded-2xl flex items-center justify-center text-[#4A3728] group-hover:bg-[#4A3728] group-hover:text-white transition-all overflow-hidden">
-                                                            <ProductImage src={box.imageSrc} color="#4A3728" alt={box.title} className="p-3" />
+                                                <button 
+                                                    key={box.size}
+                                                    onClick={() => {setSelectedBoxSize(box.size); setCurrentBox([]);}}
+                                                    className="bg-white p-10 rounded-[2.5rem] border border-[#F2E8DF] hover:border-[#D4A373] hover:shadow-2xl transition-all group text-left space-y-6 relative overflow-hidden"
+                                                >
+                                                    {box.savings && (
+                                                        <div className="absolute top-6 right-6 bg-[#D4A373] text-white px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest shadow-md">
+                                                            {box.savings}
                                                         </div>
-                                                        <span className="bg-[#D4A373] text-white text-[9px] font-black px-3 py-1 rounded-full uppercase tracking-widest">{box.savings}</span>
+                                                    )}
+                                                    <div className="w-16 h-16 bg-[#F5EBE0] rounded-2xl flex items-center justify-center text-[#4A3728] group-hover:bg-[#4A3728] group-hover:text-white transition-all">
+                                                        <Icon name="Package" size={32} />
                                                     </div>
                                                     <div>
-                                                        <h3 className="text-2xl md:text-3xl font-black text-[#4A3728]">{box.title}</h3>
-                                                        <p className="font-bold text-[#A09184] text-xs md:text-sm mt-1">{box.size} Handcrafted Cookies</p>
+                                                        <h4 className="text-2xl font-black text-[#4A3728]">{box.title}</h4>
+                                                        <p className="text-[#A09184] font-bold">Contains {box.size} cookies</p>
                                                     </div>
-                                                    <div className="flex justify-between items-end">
-                                                        <span className="text-2xl md:text-3xl font-black text-[#4A3728]">{box.price} <span className="text-sm">SEK</span></span>
-                                                        <span className="p-3 bg-gray-50 rounded-xl group-hover:translate-x-1 transition-transform"><Icon name="ArrowRight" size={20} /></span>
+                                                    <div className="flex justify-between items-end pt-4">
+                                                        <div className="space-y-1">
+                                                            <span className="text-3xl font-black text-[#4A3728]">{box.price} <span className="text-sm">SEK</span></span>
+                                                            <p className="text-[10px] text-[#A09184] font-bold uppercase tracking-widest">~{(box.price / box.size).toFixed(1)} per cookie</p>
+                                                        </div>
+                                                        <span className="bg-[#4A3728] text-white p-3 rounded-xl opacity-0 group-hover:opacity-100 transition-all"><Icon name="ArrowRight" size={20} /></span>
                                                     </div>
                                                 </button>
                                             ))}
                                         </div>
                                     </div>
                                 ) : (
-                                    <div className="grid lg:grid-cols-3 gap-8 md:gap-12 items-start">
-                                        <div className="lg:col-span-2 space-y-6 md:space-y-10">
-                                            <div className="flex justify-between items-center bg-white p-5 md:p-6 rounded-[1.5rem] md:rounded-[2rem] border border-[#F2E8DF]">
-                                                <button onClick={() => setSelectedBoxSize(null)} className="flex items-center gap-2 text-[10px] font-black uppercase text-[#A09184] hover:text-[#4A3728] transition-colors"><Icon name="ArrowLeft" size={14} /> Back</button>
-                                                <div className="text-right">
-                                                    <h3 className="font-black text-[#4A3728] text-lg md:text-xl leading-none">{BOX_OPTIONS.find(b => b.size === selectedBoxSize).title}</h3>
-                                                    <p className="text-[10px] font-bold text-[#D4A373] uppercase tracking-widest mt-1">{currentBox.length} / {selectedBoxSize} added</p>
+                                    <div className="grid lg:grid-cols-3 gap-12">
+                                        <div className="lg:col-span-2 space-y-10">
+                                            <div className="flex justify-between items-center">
+                                                <div className="space-y-2">
+                                                    <h2 className="text-4xl font-extrabold text-[#4A3728]">Building {BOX_OPTIONS.find(b => b.size === selectedBoxSize).title}</h2>
+                                                    <p className="text-[#A09184]">Select {selectedBoxSize} cookies to complete your pack.</p>
                                                 </div>
+                                                <button 
+                                                    onClick={() => setSelectedBoxSize(null)}
+                                                    className="text-[10px] font-black uppercase tracking-widest text-[#D4A373] hover:text-[#4A3728] underline underline-offset-4"
+                                                >
+                                                    Change Size
+                                                </button>
                                             </div>
-                                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
+
+                                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                                 {COOKIES.map(cookie => (
-                                                    <div key={cookie.id} className="bg-white p-4 md:p-5 rounded-[1.5rem] md:rounded-[2rem] border border-[#F2E8DF] flex gap-4 md:gap-5 items-center">
-                                                        <div className="w-16 h-16 md:w-24 md:h-24 bg-[#FAF9F6] rounded-xl md:rounded-2xl flex items-center justify-center flex-shrink-0 overflow-hidden">
-                                                            <ProductImage src={cookie.imageSrc} color={cookie.color} alt={cookie.name} className="p-3" />
+                                                    <div key={cookie.id} className="bg-white p-4 rounded-3xl border border-[#F2E8DF] flex gap-4 items-center group transition-all hover:shadow-md">
+                                                        <div className="w-24 h-24 rounded-2xl overflow-hidden">
+                                                            <img src={cookie.image} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
                                                         </div>
-                                                        <div className="flex-1 space-y-2">
-                                                            <h4 className="font-black text-sm md:text-base text-[#4A3728] line-clamp-1">{cookie.name}</h4>
-                                                            <button onClick={() => {if(currentBox.length < selectedBoxSize) setCurrentBox([...currentBox, cookie])}} disabled={currentBox.length >= selectedBoxSize} className="px-4 py-2 bg-[#F5EBE0] text-[#4A3728] rounded-lg text-[9px] md:text-[10px] font-black uppercase tracking-widest hover:bg-[#4A3728] hover:text-white transition-all disabled:opacity-20 active:scale-95">Add</button>
+                                                        <div className="flex-1">
+                                                            <h4 className="font-bold text-lg text-[#4A3728]">{cookie.name}</h4>
+                                                            <button 
+                                                                onClick={() => addToBox(cookie)}
+                                                                disabled={currentBox.length >= selectedBoxSize}
+                                                                className="mt-2 px-4 py-2 bg-[#F5EBE0] rounded-lg text-[10px] font-black uppercase tracking-widest active:bg-[#4A3728] active:text-white transition-all disabled:opacity-20"
+                                                            >
+                                                                Add to Box
+                                                            </button>
                                                         </div>
                                                     </div>
                                                 ))}
                                             </div>
                                         </div>
-                                        <div className="lg:sticky lg:top-28 h-fit bg-[#4A3728] text-white p-8 md:p-10 rounded-[2.5rem] md:rounded-[3rem] shadow-2xl space-y-8 md:space-y-10">
-                                            <div className="space-y-3">
-                                                <h3 className="text-xl md:text-2xl font-black tracking-tight">Your Box</h3>
-                                                <div className="h-1.5 bg-white/10 rounded-full overflow-hidden"><div className="h-full bg-[#D4A373] transition-all duration-500" style={{ width: `${(currentBox.length/selectedBoxSize)*100}%` }}></div></div>
-                                            </div>
-                                            <div className="grid grid-cols-5 gap-2 md:gap-3">
+
+                                        <div className="lg:sticky lg:top-32 h-fit bg-white p-8 rounded-[2.5rem] border-2 border-[#D4A373] shadow-2xl">
+                                            <h3 className="text-xl font-black mb-8 flex justify-between text-[#4A3728]">Box Progress <span>{currentBox.length}/{selectedBoxSize}</span></h3>
+                                            <div className="grid grid-cols-5 gap-3 mb-10">
                                                 {[...Array(selectedBoxSize)].map((_, i) => (
-                                                    <div key={i} className="aspect-square bg-white/5 border border-white/10 rounded-lg md:rounded-xl flex items-center justify-center relative group overflow-hidden">
+                                                    <div key={i} className="aspect-square bg-[#FDFBF7] border-2 border-dashed border-[#EDE0D4] rounded-xl flex items-center justify-center overflow-hidden relative group">
                                                         {currentBox[i] ? (
                                                             <>
-                                                                <ProductImage src={currentBox[i].imageSrc} color={currentBox[i].color} alt={currentBox[i].name} className="p-1 scale-110 md:scale-125" />
-                                                                <button onClick={() => {const n = [...currentBox]; n.splice(i,1); setCurrentBox(n);}} className="absolute inset-0 bg-red-500/80 rounded-lg md:rounded-xl opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity"><Icon name="X" size={14} /></button>
+                                                                <img src={currentBox[i].image} className="w-full h-full object-cover animate-in" />
+                                                                <button 
+                                                                    onClick={() => {
+                                                                        const next = [...currentBox];
+                                                                        next.splice(i, 1);
+                                                                        setCurrentBox(next);
+                                                                    }}
+                                                                    className="absolute inset-0 bg-black/40 text-white opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity"
+                                                                >
+                                                                    <Icon name="X" size={16} />
+                                                                </button>
                                                             </>
-                                                        ) : (<Icon name="Plus" size={12} className="opacity-10" />)}
+                                                        ) : (
+                                                            <Icon name="Cookie" size={14} className="opacity-10 text-[#4A3728]" />
+                                                        )}
                                                     </div>
                                                 ))}
                                             </div>
-                                            <button onClick={addBoxToCart} disabled={currentBox.length < selectedBoxSize} className="w-full py-4 md:py-5 bg-[#D4A373] text-white rounded-2xl font-black text-xs uppercase tracking-widest disabled:opacity-30 active:scale-95 transition-all">{currentBox.length < selectedBoxSize ? `Add ${selectedBoxSize - currentBox.length} more` : 'Add Box to Bag'}</button>
+                                            <button 
+                                                onClick={addBoxToCart}
+                                                disabled={currentBox.length < selectedBoxSize}
+                                                className="w-full bg-[#4A3728] text-white py-5 rounded-2xl font-black text-sm uppercase tracking-widest disabled:opacity-30 shadow-lg"
+                                            >
+                                                {currentBox.length < selectedBoxSize ? `Add ${selectedBoxSize - currentBox.length} more` : 'Complete Box'}
+                                            </button>
                                         </div>
                                     </div>
                                 )}
                             </div>
                         )}
 
-                        {view === 'checkout' && (
-                            <div className="max-w-6xl mx-auto animate-in pt-6 md:pt-10">
-                                <div className="grid lg:grid-cols-3 gap-8 md:gap-12">
-                                    <div className="lg:col-span-2 space-y-8 md:space-y-12">
-                                        <div className="flex justify-between items-center px-2">
-                                            {[1, 2, 3, 4].map(step => (
-                                                <div key={step} className="flex items-center flex-1 last:flex-none">
-                                                    <div className={`w-10 h-10 md:w-12 md:h-12 rounded-full flex items-center justify-center font-black text-xs transition-all duration-500 ${checkoutStep >= step ? 'bg-[#4A3728] text-white shadow-lg' : 'bg-gray-100 text-[#A09184]'}`}>
-                                                        {checkoutStep > step ? <Icon name="Check" size={18} /> : step}
-                                                    </div>
-                                                    {step < 4 && <div className={`h-1 flex-1 mx-2 md:mx-4 rounded-full ${checkoutStep > step ? 'bg-[#4A3728]' : 'bg-gray-100'}`} />}
-                                                </div>
-                                            ))}
-                                        </div>
-
-                                        {checkoutStep === 1 && (
-                                            <div className="bg-white p-8 md:p-12 rounded-[2.5rem] border border-[#F2E8DF] space-y-8 animate-in">
-                                                <div className="space-y-2">
-                                                    <h2 className="text-3xl font-black text-[#4A3728]">Your Details</h2>
-                                                    <p className="text-[#A09184] text-sm font-medium">Please enter your contact information.</p>
-                                                </div>
-                                                <div className="grid gap-6">
-                                                    <div className="space-y-2">
-                                                        <label className="text-[10px] font-black uppercase tracking-widest text-[#4A3728]/60 ml-1">Full Name</label>
-                                                        <input 
-                                                            type="text" 
-                                                            placeholder="Stockholm Fika Enthusiast"
-                                                            className="w-full px-6 py-4 bg-[#FAF9F6] border border-[#F2E8DF] rounded-2xl font-bold"
-                                                            value={checkoutData.name}
-                                                            onChange={e => setCheckoutData({...checkoutData, name: e.target.value})}
-                                                        />
-                                                    </div>
-                                                    <div className="grid md:grid-cols-2 gap-6">
-                                                        <div className="space-y-2">
-                                                            <label className="text-[10px] font-black uppercase tracking-widest text-[#4A3728]/60 ml-1">Email Address</label>
-                                                            <input 
-                                                                type="email" 
-                                                                placeholder="hello@ohmycookie.se"
-                                                                className={`w-full px-6 py-4 bg-[#FAF9F6] border border-[#F2E8DF] rounded-2xl font-bold transition-colors ${checkoutData.email && !isValidEmail(checkoutData.email) ? 'border-red-300 bg-red-50' : ''}`}
-                                                                value={checkoutData.email}
-                                                                onChange={e => setCheckoutData({...checkoutData, email: e.target.value.toLowerCase().trim()})}
-                                                            />
-                                                            {checkoutData.email && !isValidEmail(checkoutData.email) && (
-                                                                <p className="text-[10px] font-bold text-red-500 uppercase tracking-widest ml-1 animate-in">
-                                                                    Please enter a valid email address
-                                                                </p>
-                                                            )}
-                                                        </div>
-                                                        <div className="space-y-2">
-                                                            <label className="text-[10px] font-black uppercase tracking-widest text-[#4A3728]/60 ml-1">Phone Number</label>
-                                                            <div className="relative group">
-                                                                <span className="absolute left-6 top-1/2 -translate-y-1/2 font-black text-[#4A3728]/40 text-sm md:text-base">+46</span>
-                                                                <input 
-                                                                    type="tel" 
-                                                                    placeholder="70 000 00 00"
-                                                                    className={`w-full pl-16 pr-6 py-4 bg-[#FAF9F6] border border-[#F2E8DF] rounded-2xl font-bold transition-colors ${checkoutData.phone && !isValidSwedishPhone(checkoutData.phone) ? 'border-red-300 bg-red-50' : ''}`}
-                                                                    value={checkoutData.phone}
-                                                                    onChange={e => setCheckoutData({...checkoutData, phone: formatSwedishPhone(e.target.value)})}
-                                                                />
-                                                            </div>
-                                                            <p className="text-[10px] font-bold text-[#A09184] uppercase tracking-widest ml-1">
-                                                                {checkoutData.phone && !isValidSwedishPhone(checkoutData.phone) 
-                                                                    ? <span className="text-red-500 animate-in">Please enter a valid mobile number (7X ...)</span>
-                                                                    : 'Standard Swedish mobile format'}
-                                                            </p>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <button 
-                                                    onClick={handleCheckoutNext}
-                                                    disabled={!checkoutData.name || !isValidEmail(checkoutData.email) || !isValidSwedishPhone(checkoutData.phone)}
-                                                    className="w-full py-5 bg-[#4A3728] text-white rounded-2xl font-black uppercase tracking-widest disabled:opacity-30 hover:bg-[#D4A373] transition-colors"
-                                                >
-                                                    Continue to Delivery
-                                                </button>
-                                            </div>
-                                        )}
-
-                                        {checkoutStep === 2 && (
-                                            <div className="bg-white p-8 md:p-12 rounded-[2.5rem] border border-[#F2E8DF] space-y-10 animate-in">
-                                                <div className="space-y-2">
-                                                    <h2 className="text-3xl font-black text-[#4A3728]">Delivery Method</h2>
-                                                    <p className="text-[#A09184] text-sm font-medium">How would you like to receive your fika?</p>
-                                                </div>
-                                                <div className="grid md:grid-cols-2 gap-6">
-                                                    <button 
-                                                        onClick={() => setCheckoutData({...checkoutData, method: 'pickup'})}
-                                                        className={`p-8 rounded-[2rem] border-2 text-left space-y-4 transition-all ${checkoutData.method === 'pickup' ? 'border-[#4A3728] bg-[#4A3728] text-white' : 'border-[#F2E8DF] bg-[#FAF9F6]'}`}
-                                                    >
-                                                        <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${checkoutData.method === 'pickup' ? 'bg-white/20' : 'bg-white'}`}>
-                                                            <Icon name="Store" size={20} />
-                                                        </div>
-                                                        <div>
-                                                            <h4 className="font-black">Store Pickup</h4>
-                                                            <p className={`text-xs mt-1 ${checkoutData.method === 'pickup' ? 'opacity-70' : 'text-[#A09184]'}`}>Free • Stockholm City</p>
-                                                        </div>
-                                                    </button>
-                                                    <button 
-                                                        onClick={() => setCheckoutData({...checkoutData, method: 'delivery'})}
-                                                        className={`p-8 rounded-[2rem] border-2 text-left space-y-4 transition-all ${checkoutData.method === 'delivery' ? 'border-[#4A3728] bg-[#4A3728] text-white' : 'border-[#F2E8DF] bg-[#FAF9F6]'}`}
-                                                    >
-                                                        <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${checkoutData.method === 'delivery' ? 'bg-white/20' : 'bg-white'}`}>
-                                                            <Icon name="Truck" size={20} />
-                                                        </div>
-                                                        <div>
-                                                            <h4 className="font-black">Inner City Delivery</h4>
-                                                            <p className={`text-xs mt-1 ${checkoutData.method === 'delivery' ? 'opacity-70' : 'text-[#A09184]'}`}>49 SEK • Stockholm Area</p>
-                                                        </div>
-                                                    </button>
-                                                </div>
-
-                                                {checkoutData.method === 'delivery' && (
-                                                    <div className="space-y-2 animate-in">
-                                                        <label className="text-[10px] font-black uppercase tracking-widest text-[#4A3728]/60 ml-1">Delivery Address</label>
-                                                        <input 
-                                                            type="text" 
-                                                            placeholder="Drottninggatan 1, 111 21 Stockholm"
-                                                            className="w-full px-6 py-4 bg-[#FAF9F6] border border-[#F2E8DF] rounded-2xl font-bold"
-                                                            value={checkoutData.address}
-                                                            onChange={e => setCheckoutData({...checkoutData, address: e.target.value})}
-                                                        />
-                                                    </div>
-                                                )}
-
-                                                <div className="flex gap-4">
-                                                    <button onClick={handleCheckoutBack} className="w-1/3 py-5 bg-[#FAF9F6] text-[#4A3728] rounded-2xl font-black uppercase tracking-widest border border-[#F2E8DF]">Back</button>
-                                                    <button 
-                                                        onClick={handleCheckoutNext}
-                                                        disabled={checkoutData.method === 'delivery' && !checkoutData.address}
-                                                        className="flex-1 py-5 bg-[#4A3728] text-white rounded-2xl font-black uppercase tracking-widest disabled:opacity-30 hover:bg-[#D4A373] transition-colors"
-                                                    >
-                                                        Go to Payment
-                                                    </button>
-                                                </div>
-                                            </div>
-                                        )}
-
-                                        {checkoutStep === 3 && (
-                                            <div className="bg-white p-4 md:p-0 md:bg-transparent rounded-[2.5rem] space-y-8 animate-in">
-                                                <div className="max-w-md mx-auto swish-bg rounded-[3rem] overflow-hidden shadow-2xl border-4 border-white/10">
-                                                    <div className="p-8 pb-4 flex flex-col items-center gap-4">
-                                                        <div className="w-16 h-16 bg-white rounded-2xl flex items-center justify-center shadow-lg">
-                                                            <Icon name="Smartphone" size={32} className="text-[#2D58A7]" />
-                                                        </div>
-                                                        <div className="text-center text-white">
-                                                            <h2 className="text-2xl font-black">Swish Payment</h2>
-                                                            <p className="text-xs font-bold opacity-60 uppercase tracking-widest">Pay Securely</p>
-                                                        </div>
-                                                    </div>
-
-                                                    <div className="px-6 pb-8">
-                                                        <div className="bg-white rounded-[2rem] p-8 shadow-xl space-y-6 text-center">
-                                                            {isSwishProcessing ? (
-                                                                <div className="py-12 flex flex-col items-center gap-6 animate-pulse">
-                                                                    <div className="swish-loader border-t-[#2D58A7]"></div>
-                                                                    <p className="text-[#2D58A7] font-black uppercase text-[10px] tracking-[0.2em]">Verifying Payment...</p>
-                                                                </div>
-                                                            ) : (
-                                                                <>
-                                                                    <div className="space-y-1">
-                                                                        <span className="text-[10px] font-black uppercase tracking-widest text-gray-400">Total Amount</span>
-                                                                        <div className="text-4xl font-black text-[#2D58A7] tracking-tighter">{totalPrice} SEK</div>
-                                                                    </div>
-
-                                                                    <div className="flex justify-center py-2">
-                                                                        <QRCodeGenerator url={swishLink} size={160} />
-                                                                    </div>
-
-                                                                    <div className="space-y-4 pt-4">
-                                                                        <div className="bg-gray-50 rounded-2xl p-4 border border-gray-100">
-                                                                            <p className="text-[10px] font-black text-gray-400 uppercase mb-1">Receiver</p>
-                                                                            <p className="font-black text-[#2D58A7]">076-434 91 38</p>
-                                                                            <p className="text-[10px] font-bold text-gray-500 italic">PD / Oh My Cookie</p>
-                                                                        </div>
-
-                                                                        <div className="flex flex-col gap-3">
-                                                                            <a 
-                                                                                href={swishLink}
-                                                                                onClick={(e) => {
-                                                                                    e.preventDefault();
-                                                                                    handleSwishPayment();
-                                                                                }}
-                                                                                className="w-full py-4 bg-[#2D58A7] text-white rounded-xl font-black uppercase text-xs tracking-widest shadow-lg active:scale-95 transition-transform"
-                                                                            >
-                                                                                Open Swish App
-                                                                            </a>
-                                                                            <button 
-                                                                                onClick={handleSwishPayment}
-                                                                                className="text-[10px] font-black text-gray-400 uppercase tracking-widest hover:text-[#2D58A7] transition-colors"
-                                                                            >
-                                                                                Already Paid? Verify Now
-                                                                            </button>
-                                                                        </div>
-                                                                    </div>
-                                                                </>
-                                                            )}
-                                                        </div>
-                                                    </div>
-                                                    
-                                                    <div className="pb-8 text-center">
-                                                        <p className="text-[10px] text-white/40 font-bold uppercase tracking-[0.3em]">Secure Fika Protocol</p>
-                                                    </div>
-                                                </div>
-
-                                                <button onClick={handleCheckoutBack} className="w-full py-4 text-[#A09184] font-black uppercase text-[10px] tracking-widest hover:text-[#4A3728] transition-colors">Cancel Payment</button>
-                                            </div>
-                                        )}
-
-                                        {checkoutStep === 4 && (
-                                            <div className="bg-white p-8 md:p-16 rounded-[2.5rem] border border-[#F2E8DF] text-center space-y-8 animate-in">
-                                                <div className="w-24 h-24 bg-[#B5C99A]/20 text-[#4A3728] rounded-full flex items-center justify-center mx-auto mb-4">
-                                                    <span className="text-[#4A3728]"><Icon name="Check" size={48} /></span>
-                                                </div>
-                                                <div className="space-y-4">
-                                                    <h2 className="text-4xl md:text-5xl font-black text-[#4A3728] tracking-tighter">Order Confirmed!</h2>
-                                                    <p className="text-[#A09184] max-w-sm mx-auto">Tack, {checkoutData.name.split(' ')[0]}! We've received your order. We've sent a confirmation email to <span className="text-[#4A3728] font-bold">{checkoutData.email}</span>.</p>
-                                                </div>
-                                                <div className="bg-[#FAF9F6] p-8 rounded-3xl border border-[#F2E8DF] text-left space-y-4 max-w-sm mx-auto">
-                                                    <div className="flex justify-between items-center pb-4 border-b border-[#F2E8DF]">
-                                                        <span className="text-[10px] font-black uppercase tracking-widest text-[#A09184]">Order ID</span>
-                                                        <span className="font-black text-xs">{orderId}</span>
-                                                    </div>
-                                                    <div className="space-y-1">
-                                                        <p className="text-[10px] font-black uppercase tracking-widest text-[#A09184]">Collection/Delivery</p>
-                                                        <p className="font-bold text-sm">{checkoutData.method === 'pickup' ? 'Pickup at Stockholm Bakery' : checkoutData.address}</p>
-                                                    </div>
-                                                </div>
-                                                <button onClick={() => {setCart([]); navigate('home')}} className="px-12 py-5 bg-[#4A3728] text-white rounded-2xl font-black uppercase tracking-widest hover:bg-[#D4A373] transition-all shadow-xl">Back to Homepage</button>
-                                            </div>
-                                        )}
-                                    </div>
-
-                                    {checkoutStep < 4 && (
-                                        <div className="lg:sticky lg:top-28 h-fit space-y-6">
-                                            <div className="bg-[#4A3728] text-white p-8 md:p-10 rounded-[2.5rem] shadow-2xl space-y-8 animate-in">
-                                                <h3 className="text-2xl font-black tracking-tight flex items-center gap-3">
-                                                    <ShoppingBagSVG size={24} className="text-[#D4A373]" />
-                                                    Summary
-                                                </h3>
-                                                <div className="space-y-4 max-h-[300px] overflow-y-auto no-scrollbar pr-2">
-                                                    {cart.map(item => (
-                                                        <div key={item.id} className="flex justify-between items-start group">
-                                                            <div className="space-y-1">
-                                                                <p className="font-bold text-sm leading-tight group-hover:text-[#D4A373] transition-colors">{item.name}</p>
-                                                                <p className="text-[10px] font-black uppercase tracking-widest opacity-40">{item.quantity} × {item.price} SEK</p>
-                                                            </div>
-                                                            <span className="font-black text-sm">{item.price * item.quantity} SEK</span>
-                                                        </div>
-                                                    ))}
-                                                </div>
-                                                <div className="pt-8 border-t border-white/10 space-y-3">
-                                                    <div className="flex justify-between text-sm">
-                                                        <span className="opacity-60 font-bold">Subtotal</span>
-                                                        <span className="font-black">{subtotal} SEK</span>
-                                                    </div>
-                                                    <div className="flex justify-between text-sm">
-                                                        <span className="opacity-60 font-bold">Delivery</span>
-                                                        <span className="font-black text-[#D4A373]">{deliveryFee > 0 ? `${deliveryFee} SEK` : 'Free'}</span>
-                                                    </div>
-                                                    <div className="flex justify-between items-end pt-4">
-                                                        <span className="text-[10px] font-black uppercase tracking-widest opacity-60">Total</span>
-                                                        <span className="text-4xl font-black tracking-tighter text-[#D4A373]">{totalPrice} SEK</span>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    )}
-                                </div>
-                            </div>
-                        )}
-
-                        {view === 'about' && (
-                            <div className="max-w-7xl mx-auto space-y-20 md:space-y-32 animate-in pt-6">
-                                <section className="grid md:grid-cols-2 gap-12 md:gap-20 items-center">
-                                    <div className="space-y-6 md:space-y-10 order-2 md:order-1 text-center md:text-left">
-                                        <div className="space-y-3 md:space-y-4">
-                                            <span className="text-[10px] font-black uppercase tracking-[0.5em] text-[#D4A373]">Since 2024</span>
-                                            <h2 className="text-4xl md:text-7xl font-black text-[#4A3728] tracking-tighter leading-none">Small Batch, <br className="hidden md:block"/>Big Heart.</h2>
-                                        </div>
-                                        <p className="text-lg md:text-xl text-[#A09184] leading-relaxed italic">"Cookies meant for the moment you finally sit down and take a breath."</p>
-                                        <div className="space-y-6 text-[#A09184] text-sm md:text-base">
-                                            <p>Founded by PD, Oh! My Cookie started in a small Stockholm kitchen with one goal: to redefine the fika staple.</p>
-                                            <p>We use 100% organic Swedish butter and ethically sourced cocoa. No shortcuts, just craft.</p>
-                                        </div>
-                                    </div>
-                                    <div className="order-1 md:order-2 bg-[#F5EBE0] rounded-[2.5rem] md:rounded-[4rem] aspect-square md:aspect-[4/5] flex items-center justify-center p-12 md:p-20">
-                                        <CookieSVG color="#4A3728" className="w-full h-full opacity-20" />
-                                    </div>
-                                </section>
-                                <div className="space-y-16">
-                                    <section className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-10">
-                                        {TESTIMONIALS.map((t, i) => (
-                                            <div key={i} className="bg-white p-8 md:p-10 rounded-[2rem] md:rounded-[2.5rem] border border-[#F2E8DF] shadow-sm relative overflow-hidden">
-                                                <Icon name="Quote" size={40} className="text-[#F5EBE0]/50 absolute -right-2 -top-2" />
-                                                <p className="text-[#4A3728] text-base md:text-lg leading-relaxed mb-8 relative z-10">"{t.text}"</p>
-                                                <div className="relative z-10">
-                                                    <div className="font-black text-[#4A3728]">{t.name}</div>
-                                                    <div className="text-[9px] font-black text-[#D4A373] uppercase tracking-widest">{t.handle}</div>
-                                                </div>
-                                            </div>
-                                        ))}
-                                    </section>
-                                    <section className="bg-[#4A3728] rounded-[2.5rem] md:rounded-[4rem] p-8 md:p-20 text-white relative overflow-hidden">
-                                        <div className="absolute top-0 right-0 w-full h-full opacity-5 pointer-events-none">
-                                            <div className="grid grid-cols-6 gap-4 rotate-12 scale-150">
-                                                {[...Array(24)].map((_, i) => <Icon key={i} name="Heart" size={48} />)}
-                                            </div>
-                                        </div>
-                                        <div className="relative z-10 flex flex-col md:flex-row items-center gap-12 md:gap-20">
-                                            <div className="flex-1 space-y-6 md:space-y-8 text-center md:text-left">
-                                                <div className="inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-[#D4A373]/20 border border-[#D4A373]/30">
-                                                    <span className="text-[10px] md:text-xs font-black uppercase tracking-[0.2em] text-[#D4A373]">Share the Love</span>
-                                                </div>
-                                                <h2 className="text-3xl md:text-6xl font-black tracking-tighter leading-none">Love our cookies? <br className="md:hidden" /><span className="text-[#D4A373]">Leave a review!</span></h2>
-                                                <p className="text-[#A09184] text-sm md:text-lg max-w-xl mx-auto md:mx-0">Your feedback helps us perfect every batch. Scan the code or click the button below to leave a review on Google.</p>
-                                                <a href="https://g.page/r/CWZv_BvtbH5gEBM/review" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-3 px-10 py-5 bg-[#D4A373] text-white rounded-2xl font-black text-xs uppercase tracking-widest btn-hover">
-                                                    <Icon name="ExternalLink" size={16} /> Write Review
-                                                </a>
-                                            </div>
-                                            <div className="shrink-0 space-y-4">
-                                                <div className="w-48 h-48 md:w-64 md:h-64 bg-white p-5 rounded-[2rem] shadow-2xl flex flex-col items-center justify-center gap-4">
-                                                    <div className="w-full h-full flex items-center justify-center overflow-hidden">
-                                                        <QRCodeGenerator url="https://g.page/r/CWZv_BvtbH5gEBM/review" />
-                                                    </div>
-                                                </div>
-                                                <p className="text-center text-[10px] font-black uppercase tracking-[0.3em] text-[#D4A373]">Scan to Review</p>
-                                            </div>
-                                        </div>
-                                    </section>
-                                </div>
-                            </div>
-                        )}
-
                         {view === 'privacy' && (
-                            <div className="max-w-4xl mx-auto py-12 md:py-20 space-y-12 md:space-y-16 animate-in">
-                                <div className="space-y-4 text-center md:text-left border-b border-[#F2E8DF] pb-10">
-                                    <h1 className="text-4xl md:text-6xl font-black text-[#4A3728] tracking-tighter leading-none">Privacy Policy</h1>
-                                    <p className="text-[#A09184] font-medium tracking-widest uppercase text-[10px]">Effective: March 14, 2026</p>
+                            <div className="animate-in max-w-4xl mx-auto py-12 px-4 space-y-12">
+                                <button onClick={() => setView('home')} className="flex items-center gap-2 font-bold text-xs uppercase tracking-widest text-[#A09184] hover:text-[#4A3728] transition-colors mb-10">
+                                    <Icon name="ArrowLeft" size={14} /> Back to Home
+                                </button>
+                                
+                                <div className="space-y-4">
+                                    <h2 className="text-[10px] font-black uppercase tracking-[0.3em] text-[#D4A373]">Legal Information</h2>
+                                    <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight text-[#4A3728]">Privacy Policy</h1>
+                                    <p className="text-sm text-[#A09184]">Effective Date: February 20, 2026</p>
                                 </div>
-                                <div className="space-y-10 text-[#A09184] leading-relaxed text-sm md:text-base">
-                                    <section className="space-y-4 bg-white p-8 md:p-10 rounded-[2.5rem] border border-[#F2E8DF] shadow-sm">
-                                        <h3 className="text-xl md:text-2xl font-black text-[#4A3728]">1. Introduction</h3>
-                                        <p>At Oh My Cookie (part of BLUDEN AB), we respect your privacy and are committed to protecting the personal data you share with us. This policy outlines how we handle your information in accordance with Swedish law and GDPR standards.</p>
+
+                                <div className="prose prose-stone text-[#4A3728] space-y-10">
+                                    <section className="space-y-4">
+                                        <h3 className="text-xl font-bold">1. Introduction</h3>
+                                        <p className="leading-relaxed opacity-80">
+                                            Welcome to O My Cookie! (referred to as "we", "us", or "our"). We are committed to protecting your privacy and ensuring that your personal information is handled in a safe and responsible manner. This policy outlines how we collect, use, and protect your data when you visit omycookie.se.
+                                        </p>
                                     </section>
 
-                                    <section className="space-y-6">
-                                        <h3 className="text-xl md:text-2xl font-black text-[#4A3728] border-l-4 border-[#D4A373] pl-6">2. Information We Collect</h3>
-                                        <div className="grid md:grid-cols-2 gap-4">
-                                            <div className="bg-[#FAF9F6] p-6 rounded-2xl">
-                                                <span className="block text-[#4A3728] font-black text-xs uppercase mb-2">Order Fulfillment</span>
-                                                <p className="text-xs">We collect your name, email, phone number, and delivery address to process your fika orders and verify your identity during store pickup.</p>
-                                            </div>
-                                            <div className="bg-[#FAF9F6] p-6 rounded-2xl">
-                                                <span className="block text-[#4A3728] font-black text-xs uppercase mb-2">Communications</span>
-                                                <p className="text-xs">If you contact us via email or social media, we may keep a record of that correspondence to better serve your requests.</p>
-                                            </div>
-                                        </div>
-                                    </section>
-
-                                    <section className="space-y-4 bg-white p-8 md:p-10 rounded-[2.5rem] border border-[#F2E8DF]">
-                                        <h3 className="text-xl md:text-2xl font-black text-[#4A3728]">3. Data Security & Storage</h3>
-                                        <p>We implement industry-standard security measures to safeguard your information. We do not store credit card details; all financial transactions are handled securely via third-party providers like Swish.</p>
-                                        <p className="text-xs italic">Data is stored only as long as necessary to fulfill the purposes for which it was collected, or as required by Swedish accounting laws.</p>
-                                    </section>
-
-                                    <section className="space-y-6">
-                                        <h3 className="text-xl md:text-2xl font-black text-[#4A3728] border-l-4 border-[#D4A373] pl-6">4. Your Rights (GDPR)</h3>
-                                        <p>Under the General Data Protection Regulation, you have the following rights regarding your personal data:</p>
-                                        <ul className="grid gap-3">
-                                            <li className="flex gap-4 items-start">
-                                                <div className="w-6 h-6 rounded-full bg-[#D4A373]/20 flex items-center justify-center shrink-0 mt-1"><Icon name="Check" size={12} className="text-[#D4A373]" /></div>
-                                                <p><span className="font-bold text-[#4A3728]">Access:</span> You can request a copy of the data we hold about you.</p>
-                                            </li>
-                                            <li className="flex gap-4 items-start">
-                                                <div className="w-6 h-6 rounded-full bg-[#D4A373]/20 flex items-center justify-center shrink-0 mt-1"><Icon name="Check" size={12} className="text-[#D4A373]" /></div>
-                                                <p><span className="font-bold text-[#4A3728]">Correction:</span> You can ask us to correct inaccurate or incomplete information.</p>
-                                            </li>
-                                            <li className="flex gap-4 items-start">
-                                                <div className="w-6 h-6 rounded-full bg-[#D4A373]/20 flex items-center justify-center shrink-0 mt-1"><Icon name="Check" size={12} className="text-[#D4A373]" /></div>
-                                                <p><span className="font-bold text-[#4A3728]">Deletion:</span> You can request that we delete your personal data when it is no longer needed.</p>
-                                            </li>
+                                    <section className="space-y-4">
+                                        <h3 className="text-xl font-bold">2. Information We Collect</h3>
+                                        <p className="leading-relaxed opacity-80">
+                                            When you place a pickup order or use our "Build a Box" feature, we may collect:
+                                        </p>
+                                        <ul className="list-disc pl-5 space-y-2 opacity-80">
+                                            <li><strong>Contact Details:</strong> Your name and phone number to verify your order during in-store pickup.</li>
+                                            <li><strong>Order History:</strong> Details of the cookie selections and boxes you have curated.</li>
+                                            <li><strong>Usage Data:</strong> Information on how you interact with our website to improve your user experience.</li>
                                         </ul>
                                     </section>
 
-                                    <section className="bg-[#4A3728] p-8 md:p-10 rounded-[2.5rem] text-white space-y-4">
-                                        <h3 className="text-xl font-black text-[#D4A373]">5. Contact Us</h3>
-                                        <p className="text-sm opacity-80 leading-relaxed">If you have any questions about this Privacy Policy or wish to exercise your data rights, please contact our Data Protection Officer at:</p>
-                                        <div className="pt-2">
-                                            <p className="font-black">BLUDEN AB</p>
-                                            <p className="text-xs opacity-60">Stockholm, Sweden</p>
-                                            <p className="text-[#D4A373] font-bold mt-2">hello@ohmycookie.se</p>
-                                        </div>
+                                    <section className="space-y-4">
+                                        <h3 className="text-xl font-bold">3. How We Use Your Information</h3>
+                                        <p className="leading-relaxed opacity-80">
+                                            Your data is used strictly for operational purposes:
+                                        </p>
+                                        <ul className="list-disc pl-5 space-y-2 opacity-80">
+                                            <li>To process and fulfill your cookie orders for pickup in Stockholm.</li>
+                                            <li>To provide customer support regarding your order.</li>
+                                            <li>To improve our website functionality and cookie menu based on popular selections.</li>
+                                        </ul>
                                     </section>
 
-                                    <div className="text-center pt-10">
-                                        <button onClick={() => setView('home')} className="px-10 py-5 bg-[#FAF9F6] border border-[#F2E8DF] text-[#4A3728] rounded-2xl font-black text-xs uppercase tracking-widest btn-hover">Back to Home</button>
-                                    </div>
+                                    <section className="space-y-4">
+                                        <h3 className="text-xl font-bold">4. Data Storage & GDPR</h3>
+                                        <p className="leading-relaxed opacity-80">
+                                            As a Swedish company (Bluden AB), we comply with the General Data Protection Regulation (GDPR). Your data is stored securely and is only accessible to authorized staff members necessary for order fulfillment. We do not sell your personal data to third parties.
+                                        </p>
+                                    </section>
+
+                                    <section className="space-y-4">
+                                        <h3 className="text-xl font-bold">5. Cookies</h3>
+                                        <p className="leading-relaxed opacity-80">
+                                            Our website uses "cookies" to enhance your experience. These are small files stored on your device that help us remember your shopping basket and preferences. You can choose to disable cookies in your browser settings, though this may limit your ability to use the "Build a Box" feature.
+                                        </p>
+                                    </section>
+
+                                    <section className="space-y-4">
+                                        <h3 className="text-xl font-bold">6. Company Information</h3>
+                                        <p className="leading-relaxed opacity-80">
+                                            O My Cookie! is operated by:<br/>
+                                            <strong>Bluden AB</strong><br/>
+                                            Stockholm, Sweden<br/>
+                                            Contact: info@omycookie.se
+                                        </p>
+                                    </section>
+
+                                    <section className="space-y-4">
+                                        <h3 className="text-xl font-bold">7. Your Rights</h3>
+                                        <p className="leading-relaxed opacity-80">
+                                            You have the right to request access to the personal data we hold about you, to request corrections, or to ask for your data to be deleted from our pickup logs. Please contact us via email for any such requests.
+                                        </p>
+                                    </section>
                                 </div>
                             </div>
                         )}
                     </main>
 
-                    <footer className="bg-[#4A3728] py-16 md:py-20 px-6">
-                        <div className="max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-12 text-center md:text-left">
-                            <div className="sm:col-span-2 space-y-6">
-                                <div className="flex items-center justify-center md:justify-start gap-3">
-                                    <div className="bg-[#D4A373] p-1.5 rounded-lg"><Icon name="Cookie" size={16} className="text-[#4A3728]" /></div>
-                                    <span className="font-black text-2xl tracking-tighter uppercase text-white">ohmycookie.se</span>
-                                </div>
-                                <p className="text-[#A09184] max-w-sm mx-auto md:mx-0">Stockholm's small-batch bakery. Dedicated to the art of the fika.</p>
-                            </div>
-                            <div className="space-y-6">
-                                <h4 className="text-[10px] font-black uppercase tracking-[0.4em] text-[#D4A373]">Fika Links</h4>
-                                <ul className="space-y-3 text-sm font-bold text-[#A09184]">
-                                    <li><button onClick={() => navigate('shop')} className="hover:text-white transition-colors">Order Now</button></li>
-                                    <li><button onClick={() => navigate('cakes')} className="hover:text-white transition-colors">Jar Cakes</button></li>
-                                    <li><button onClick={() => navigate('about')} className="hover:text-white transition-colors">Our Kitchen</button></li>
-                                    <li><button onClick={() => navigate('privacy')} className="hover:text-white transition-colors">Privacy Policy</button></li>
-                                </ul>
-                            </div>
-                            <div className="space-y-6">
-                                <h4 className="text-[10px] font-black uppercase tracking-[0.4em] text-[#D4A373]">Stockholm</h4>
-                                <p className="text-sm font-bold text-[#A09184]">Collection points across Stockholm.</p>
-                                <div className="flex justify-center md:justify-start gap-4">
-                                    <div className="w-8 h-8 rounded-full bg-white/5 border border-white/10 flex items-center justify-center"><Icon name="Instagram" size={14} className="text-[#A09184]" /></div>
-                                    <div className="w-8 h-8 rounded-full bg-white/5 border border-white/10 flex items-center justify-center"><Icon name="Mail" size={14} className="text-[#A09184]" /></div>
-                                </div>
-                            </div>
+                    {/* Footer */}
+                    <footer className="pt-20 pb-16 text-center space-y-10 border-t border-[#F2E8DF]">
+                        <div className="flex justify-center gap-2 items-center grayscale opacity-40">
+                            <div className="bg-[#4A3728] p-1.5 rounded-lg"><Icon name="Cookie" size={14} className="text-white" /></div>
+                            <span className="font-extrabold text-lg tracking-tighter uppercase text-[#4A3728]">omycookie.se</span>
                         </div>
-                        <div className="max-w-7xl mx-auto mt-16 md:mt-20 pt-10 border-t border-white/5 text-center text-[9px] md:text-[10px] font-black uppercase tracking-[0.4em] text-[#A09184]/40">© 2026 BLUDEN AB • Stockholm, Sweden</div>
+
+                        <div className="flex flex-wrap justify-center gap-x-8 gap-y-4 px-6">
+                            <button onClick={() => {setView('about'); window.scrollTo(0,0)}} className="text-[10px] font-black text-[#A09184] uppercase tracking-[0.2em] hover:text-[#D4A373] transition-colors">About CC</button>
+                            <a href="#" className="text-[10px] font-black text-[#A09184] uppercase tracking-[0.2em] hover:text-[#D4A373] transition-colors">Terms of Service</a>
+                            <button onClick={() => {setView('privacy'); window.scrollTo(0,0)}} className="text-[10px] font-black text-[#A09184] uppercase tracking-[0.2em] hover:text-[#D4A373] transition-colors">Privacy Policy</button>
+                        </div>
+
+                        <div className="text-[10px] font-bold text-[#A09184] uppercase tracking-[0.3em] opacity-60">
+                            © 2026 Bluden AB • Stockholm, Sweden
+                        </div>
                     </footer>
 
+                    {/* Cart Modal */}
                     {isCartOpen && (
-                        <div className="fixed inset-0 z-[150] flex justify-end">
+                        <div className="fixed inset-0 z-50 flex justify-end">
                             <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={() => setIsCartOpen(false)} />
-                            <div className="relative w-full sm:max-w-md bg-white h-full p-8 md:p-12 flex flex-col shadow-2xl animate-in">
-                                <div className="flex justify-between items-center mb-10 md:mb-12">
-                                    <h2 className="text-3xl md:text-4xl font-black text-[#4A3728] tracking-tighter leading-none">Your Bag</h2>
-                                    <button onClick={() => setIsCartOpen(false)} className="p-3 md:p-4 bg-gray-50 rounded-2xl hover:bg-gray-100 transition-colors"><Icon name="X" size={20} /></button>
+                            <div className="relative w-full md:max-w-md bg-white h-full p-8 md:p-12 flex flex-col shadow-2xl animate-in">
+                                <div className="flex justify-between items-center mb-10">
+                                    <h2 className="text-3xl font-extrabold text-[#4A3728]">{cartStep === 'success' ? 'Ordered!' : 'Basket'}</h2>
+                                    <button onClick={() => setIsCartOpen(false)} className="p-3 bg-gray-50 rounded-2xl hover:bg-gray-100 transition-colors">
+                                        <Icon name="X" size={20} className="text-[#4A3728]" />
+                                    </button>
                                 </div>
-                                <div className="flex-1 overflow-y-auto no-scrollbar space-y-4 md:space-y-6">
-                                    {cart.length === 0 ? (
-                                        <div className="text-center py-20 opacity-20">
-                                            <ShoppingBagSVG size={48} className="mx-auto mb-4" />
-                                            <p className="font-black text-sm uppercase tracking-widest">Bag is empty</p>
+                                <div className="flex-1 overflow-y-auto no-scrollbar space-y-4">
+                                    {cartStep === 'review' ? (
+                                        cart.length === 0 ? (
+                                            <div className="text-center py-20 opacity-20">
+                                                <CartIcon size={48} className="mx-auto mb-4 text-[#4A3728]"/>
+                                                <p className="font-bold text-[#4A3728]">Empty basket</p>
+                                            </div>
+                                        ) : (
+                                            cart.map(item => (
+                                                <div key={item.id} className="bg-[#FDFBF7] p-6 rounded-[1.5rem] border border-[#F2E8DF] flex justify-between items-center group animate-in">
+                                                    <div className="flex-1">
+                                                        <h4 className="font-bold text-lg text-[#4A3728] leading-tight">{item.type}</h4>
+                                                        <p className="text-[10px] font-black uppercase tracking-widest text-[#D4A373] mt-1">
+                                                            {item.price} SEK / ea
+                                                        </p>
+                                                    </div>
+                                                    
+                                                    <div className="flex items-center bg-white border border-[#F2E8DF] rounded-xl p-1 shadow-sm">
+                                                        <button 
+                                                            onClick={() => updateQuantity(item.id, -1)}
+                                                            className="w-8 h-8 flex items-center justify-center text-[#4A3728] hover:bg-gray-50 rounded-lg transition-colors"
+                                                        >
+                                                            <Icon name="Minus" size={14} />
+                                                        </button>
+                                                        <span className="w-8 text-center font-black text-sm text-[#4A3728]">{item.quantity}</span>
+                                                        <button 
+                                                            onClick={() => updateQuantity(item.id, 1)}
+                                                            className="w-8 h-8 flex items-center justify-center text-[#4A3728] hover:bg-gray-50 rounded-lg transition-colors"
+                                                        >
+                                                            <Icon name="Plus" size={14} />
+                                                        </button>
+                                                    </div>
+
+                                                    <div className="pl-6 text-right min-w-[80px]">
+                                                        <p className="font-black text-[#4A3728] whitespace-nowrap">{item.price * item.quantity} SEK</p>
+                                                    </div>
+                                                </div>
+                                            ))
+                                        )
+                                    ) : cartStep === 'shipping' ? (
+                                        <div className="space-y-4 pt-4">
+                                            <input className="w-full p-5 bg-[#FDFBF7] border border-[#F2E8DF] rounded-2xl outline-none focus:border-[#D4A373] text-[#4A3728]" placeholder="Contact Name" />
+                                            <input className="w-full p-5 bg-[#FDFBF7] border border-[#F2E8DF] rounded-2xl outline-none focus:border-[#D4A373] text-[#4A3728]" placeholder="Phone Number" />
+                                            <div className="bg-[#F5EBE0] p-5 rounded-2xl flex items-center gap-4">
+                                                <Icon name="Store" size={20} className="text-[#D4A373]" />
+                                                <p className="text-xs font-bold leading-tight uppercase tracking-widest text-[#4A3728]">In-Store Pickup Only <br/><span className="text-[10px] opacity-60">Flagship Shop, Stockholm</span></p>
+                                            </div>
                                         </div>
                                     ) : (
-                                        cart.map(item => (
-                                            <div key={item.id} className="flex justify-between items-center bg-[#FDFBF7] p-5 md:p-6 rounded-[1.5rem] md:rounded-[2rem] border border-[#F2E8DF]">
-                                                <div className="flex-1 mr-4"><h4 className="font-black text-base md:text-lg text-[#4A3728] leading-tight">{item.name}</h4><p className="text-[10px] font-black text-[#D4A373] uppercase tracking-widest mt-1">{item.price} SEK</p></div>
-                                                <div className="flex items-center bg-white rounded-xl border border-[#F2E8DF] p-1"><button onClick={() => updateQuantity(item.id, -1)} className="w-8 h-8 flex items-center justify-center hover:bg-gray-50 rounded-lg"><Icon name="Minus" size={14} /></button><span className="w-8 text-center font-black text-sm">{item.quantity}</span><button onClick={() => updateQuantity(item.id, 1)} className="w-8 h-8 flex items-center justify-center hover:bg-gray-50 rounded-lg"><Icon name="Plus" size={14} /></button></div>
-                                            </div>
-                                        ))
+                                        <div className="text-center py-10 space-y-6">
+                                            <div className="w-24 h-24 bg-[#D4A373]/10 text-[#D4A373] rounded-full flex items-center justify-center mx-auto"><Icon name="Check" size={48} /></div>
+                                            <h3 className="text-3xl font-extrabold text-[#4A3728]">Vi ses snart!</h3>
+                                            <p className="text-sm opacity-60 text-[#4A3728]">We've received your order. It'll be ready for pick-up soon.</p>
+                                            <button onClick={() => {setIsCartOpen(false); setView('home'); setCart([]); setCartStep('review');}} className="w-full py-5 bg-[#4A3728] text-white rounded-2xl font-black text-xs uppercase tracking-widest">Great</button>
+                                        </div>
                                     )}
                                 </div>
-                                {cart.length > 0 && (
-                                    <div className="pt-8 md:pt-10 space-y-6">
-                                        <div className="flex justify-between items-end"><span className="text-[10px] font-black uppercase text-[#A09184] tracking-[0.3em]">Subtotal</span><span className="text-4xl md:text-5xl font-black text-[#4A3728] tracking-tighter">{subtotal} SEK</span></div>
-                                        <button onClick={() => navigate('checkout')} className="w-full py-5 md:py-6 bg-[#4A3728] text-white rounded-[1.5rem] md:rounded-[2rem] font-black text-xs uppercase tracking-[0.2em] shadow-xl hover:bg-[#D4A373] transition-colors active:scale-95">Proceed to Checkout</button>
+                                {cart.length > 0 && cartStep !== 'success' && (
+                                    <div className="pt-8 mt-4 border-t border-[#F2E8DF]">
+                                        <div className="flex justify-between items-end mb-8">
+                                            <span className="text-[10px] font-black uppercase text-[#A09184] tracking-widest">Subtotal</span>
+                                            <span className="text-4xl font-black text-[#4A3728]">{totalPrice} SEK</span>
+                                        </div>
+                                        <button onClick={() => cartStep === 'review' ? setCartStep('shipping') : setCartStep('success')} className="w-full bg-[#D4A373] text-white py-6 rounded-2xl font-black text-xs uppercase tracking-widest shadow-lg active:scale-[0.98] transition-all">
+                                            {cartStep === 'review' ? 'Continue to Pickup' : 'Place Order'}
+                                        </button>
                                     </div>
                                 )}
                             </div>
                         </div>
                     )}
 
+                    {/* Cookie Consent Banner */}
                     {showCookieBanner && (
-                        <div className="fixed bottom-6 left-6 right-6 md:left-auto md:right-10 md:w-[400px] z-[200] animate-in">
-                            <div className="bg-[#4A3728] p-6 md:p-8 rounded-[2rem] md:rounded-[2.5rem] shadow-2xl text-white space-y-6">
-                                <div className="flex gap-4">
-                                    <div className="bg-[#D4A373] p-3 rounded-2xl h-fit shrink-0"><Icon name="Cookie" size={24} className="text-[#4A3728]" /></div>
-                                    <div className="space-y-1"><h3 className="font-black text-lg md:text-xl leading-none">Cookie Policy</h3><p className="text-[11px] text-[#A09184] leading-relaxed">We use essential cookies to remember your box fika selections. No tracking involved.</p></div>
+                        <div className="fixed bottom-6 left-6 right-6 z-[60] md:left-auto md:right-10 md:w-96 animate-in">
+                            <div className="bg-white/95 backdrop-blur-xl border border-[#F2E8DF] shadow-2xl rounded-[2rem] p-6 flex flex-col gap-6">
+                                <div className="flex gap-4 items-start">
+                                    <div className="bg-[#F5EBE0] p-3 rounded-2xl">
+                                        <Icon name="Cookie" size={24} className="text-[#D4A373]" />
+                                    </div>
+                                    <div className="space-y-1">
+                                        <h3 className="font-extrabold text-[#4A3728]">Cookie Notice</h3>
+                                        <p className="text-xs text-[#A09184] line-height-relaxed">
+                                            We use cookies to remember your fika box selections and improve your experience. 
+                                            Check our <button onClick={() => {setView('privacy'); setShowCookieBanner(false); window.scrollTo(0,0)}} className="text-[#D4A373] underline font-bold">Privacy Policy</button> for more details.
+                                        </p>
+                                    </div>
                                 </div>
                                 <div className="flex gap-3">
-                                    <button onClick={() => {localStorage.setItem('cookie-consent', 'true'); setShowCookieBanner(false)}} className="flex-1 py-3 md:py-4 bg-white text-[#4A3728] rounded-xl font-black text-[10px] uppercase tracking-widest hover:bg-[#D4A373] hover:text-white transition-all">Accept</button>
-                                    <button onClick={() => setShowCookieBanner(false)} className="px-5 py-3 md:py-4 bg-white/10 rounded-xl font-black text-[10px] uppercase tracking-widest hover:bg-white/20 transition-all">Close</button>
+                                    <button 
+                                        onClick={acceptCookies}
+                                        className="flex-1 py-4 bg-[#4A3728] text-white rounded-xl font-black text-[10px] uppercase tracking-widest hover:bg-[#2d2118] transition-colors"
+                                    >
+                                        Accept All
+                                    </button>
+                                    <button 
+                                        onClick={() => setShowCookieBanner(false)}
+                                        className="px-6 py-4 bg-[#F5EBE0] text-[#4A3728] rounded-xl font-black text-[10px] uppercase tracking-widest hover:bg-[#EDE0D4] transition-colors"
+                                    >
+                                        Dismiss
+                                    </button>
                                 </div>
                             </div>
                         </div>
