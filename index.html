@@ -451,12 +451,21 @@
             };
 
             const addBoxToCart = () => {
-                const opt = BOX_OPTIONS.find(b => b.size === selectedBoxSize);
-                setCart([...cart, { id: Math.random(), name: opt[`title_${lang}`], items: [...currentBox], price: opt.price, quantity: 1 }]);
-                setSelectedBoxSize(null);
-                setCurrentBox([]);
-                setIsCartOpen(true);
-            };
+    const opt = BOX_OPTIONS.find(b => b.size === selectedBoxSize);
+    if (!opt) return;
+
+    setCart([...cart, { 
+        id: Math.random(), 
+        name: opt[`title_${lang}`], 
+        items: [...currentBox], // This ensures the selected cookie names are saved
+        price: opt.price, 
+        quantity: 1 
+    }]);
+    
+    setSelectedBoxSize(null);
+    setCurrentBox([]);
+    setIsCartOpen(true);
+};
 
             const isValidEmail = (email) => {
                 const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -490,34 +499,45 @@
             };
 
             const sendConfirmationEmail = (finalOrderId) => {
-                const itemsList = cart.map(item => {
-                    let text = `${item.name} (x${item.quantity}) - ${item.price * item.quantity} SEK`;
-                    if (item.items && item.items.length > 0) {
-                        const counts = item.items.reduce((acc, name) => {
-                            acc[name] = (acc[name] || 0) + 1;
-                            return acc;
-                        }, {});
-                        const selectionDetails = Object.entries(counts).map(([name, count]) => `   • ${count}x ${name}`).join('\n');
-                        text += `\nContents:\n${selectionDetails}`;
-                    }
-                    return text;
-                }).join('\n\n---\n\n');
+    const itemsList = cart.map(item => {
+        let details = `- ${item.name} (x${item.quantity}): ${item.price * item.quantity} SEK`;
+        
+        // Check if this item is a box with selected cookies
+        if (item.items && item.items.length > 0) {
+            // Count occurrences of each cookie (e.g., "2x Pistachio")
+            const cookieCounts = item.items.reduce((acc, cookieName) => {
+                acc[cookieName] = (acc[cookieName] || 0) + 1;
+                return acc;
+            }, {});
+            
+            const cookieDetails = Object.entries(cookieCounts)
+                .map(([name, count]) => `   > ${count}x ${name}`)
+                .join('\n');
+            
+            details += `\n${cookieDetails}`;
+        }
+        return details;
+    }).join('\n\n');
 
-                const templateParams = {
-                    to_name: "Oh My Cookie Admin",
-                    to_email: "np636660@gmail.com",
-                    customer_name: checkoutData.name,
-                    customer_email: checkoutData.email,
-                    customer_phone: checkoutData.phone,
-                    order_id: finalOrderId,
-                    total_price: totalPrice,
-                    delivery_method: checkoutData.method === 'pickup' ? 'Store Pickup' : 'Inner City Delivery',
-                    delivery_address: checkoutData.method === 'pickup' ? 'N/A' : checkoutData.address,
-                    items_details: itemsList
-                };
+    const templateParams = {
+        to_name: "Oh My Cookie Admin",
+        to_email: "np636660@gmail.com", // [cite: 263]
+        customer_name: checkoutData.name,
+        customer_email: checkoutData.email,
+        customer_phone: checkoutData.phone,
+        order_id: finalOrderId,
+        total_price: totalPrice,
+        delivery_method: checkoutData.method === 'pickup' ? 'Store Pickup' : 'Inner City Delivery',
+        delivery_address: checkoutData.method === 'pickup' ? 'N/A' : checkoutData.address,
+        items_details: itemsList 
+    };
 
-                return emailjs.send("service_t6r1r9b", "template_893j36h", templateParams);
-            };
+    return emailjs.send(
+        "service_t6r1r9b",
+        "template_893j36h",
+        templateParams
+    );
+};
             const handleSwishPayment = () => {
                 setIsSwishProcessing(true);
                 setTimeout(() => {
