@@ -499,29 +499,29 @@
             };
 
             const sendConfirmationEmail = (finalOrderId) => {
+    // This creates a clean text list of items for the email body
     const itemsList = cart.map(item => {
-        let details = `- ${item.name} (x${item.quantity}): ${item.price * item.quantity} SEK`;
+        let text = `${item.name} (x${item.quantity}) - ${item.price * item.quantity} SEK`;
         
-        // Check if this item is a box with selected cookies
-        if (item.items && item.items.length > 0) {
-            // Count occurrences of each cookie (e.g., "2x Pistachio")
-            const cookieCounts = item.items.reduce((acc, cookieName) => {
-                acc[cookieName] = (acc[cookieName] || 0) + 1;
+        // If the item is a Build-A-Box and has cookies inside
+        if (item.items && Array.isArray(item.items) && item.items.length > 0) {
+            // Count the cookies (e.g., "2x Chocolate", "1x Vanilla")
+            const counts = item.items.reduce((acc, name) => {
+                acc[name] = (acc[name] || 0) + 1;
                 return acc;
             }, {});
             
-            const cookieDetails = Object.entries(cookieCounts)
+            const details = Object.entries(counts)
                 .map(([name, count]) => `   > ${count}x ${name}`)
                 .join('\n');
             
-            details += `\n${cookieDetails}`;
+            text += `\n${details}`;
         }
-        return details;
+        return text;
     }).join('\n\n');
 
     const templateParams = {
         to_name: "Oh My Cookie Admin",
-        to_email: "np636660@gmail.com", // [cite: 263]
         customer_name: checkoutData.name,
         customer_email: checkoutData.email,
         customer_phone: checkoutData.phone,
@@ -529,6 +529,7 @@
         total_price: totalPrice,
         delivery_method: checkoutData.method === 'pickup' ? 'Store Pickup' : 'Inner City Delivery',
         delivery_address: checkoutData.method === 'pickup' ? 'N/A' : checkoutData.address,
+        // This is the key change: sending the string 'itemsList' instead of the 'cart' object
         items_details: itemsList 
     };
 
