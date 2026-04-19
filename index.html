@@ -499,11 +499,10 @@
             };
 
 const sendConfirmationEmail = (finalOrderId) => {
-    // 1. Create a clean HTML-formatted string for the email
+    // 1. Create the formatted string
     const itemsList = cart.map(item => {
-        let text = `<b>${item.name}</b> (x${item.quantity}) - ${item.price * item.quantity} SEK`;
+        let text = `${item.name} (x${item.quantity}) - ${item.price * item.quantity} SEK`;
         
-        // If the item is a Build-A-Box, format the nested cookies with <br>
         if (item.items && Array.isArray(item.items) && item.items.length > 0) {
             const counts = item.items.reduce((acc, name) => {
                 acc[name] = (acc[name] || 0) + 1;
@@ -511,14 +510,15 @@ const sendConfirmationEmail = (finalOrderId) => {
             }, {});
             
             const details = Object.entries(counts)
-                .map(([name, count]) => `&nbsp;&nbsp;&nbsp;> ${count}x ${name}`)
-                .join('<br>'); // HTML line break for the list
+                .map(([name, count]) => `   > ${count}x ${name}`)
+                .join('\n');
             
-            text += `<br>${details}`;
+            text += `\n${details}`;
         }
         return text;
-    }).join('<br><br>'); // Double break between different items
+    }).join('\n\n');
 
+    // 2. Pass the 'itemsList' string directly to the template
     const templateParams = {
         to_name: "Oh My Cookie Admin",
         customer_name: checkoutData.name,
@@ -528,7 +528,7 @@ const sendConfirmationEmail = (finalOrderId) => {
         total_price: totalPrice,
         delivery_method: checkoutData.method === 'pickup' ? 'Store Pickup' : 'Inner City Delivery',
         delivery_address: checkoutData.method === 'pickup' ? 'N/A' : checkoutData.address,
-        items_details: itemsList // Sending the HTML string to your {{items_details}} placeholder
+        items_details: itemsList // <-- FIXED: Pointing to the variable above
     };
 
     return emailjs.send(
